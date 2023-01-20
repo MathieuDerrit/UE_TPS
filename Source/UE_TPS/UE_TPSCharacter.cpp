@@ -1,5 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
+#include "Net/UnrealNetwork.h"
 #include "UE_TPSCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -9,6 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Weapon.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -64,6 +66,23 @@ void AUE_TPSCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	if (HasAuthority())
+	{
+		for (const TSubclassOf<AWeapon>& WeaponClass : DefaultWeapons)
+		{
+			if (!WeaponClass) continue;
+			FActorSpawnParameters Params;
+			Params.Owner = this;
+			AWeapon* SpawnedWeapon = GetWorld()->SpawnActor<AWeapon>(WeaponClass, Params);
+			const int32 Index = Weapons.Add(SpawnedWeapon);
+			if (Index == CurrentIndex)
+			{
+				CurrentWeapon = SpawnedWeapon;
+				OnRep_CurrentWeapon(nullptr);
+			}
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -81,11 +100,41 @@ void AUE_TPSCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 		//Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AUE_TPSCharacter::Move);
 
-		//Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AUE_TPSCharacter::Look);
-
 	}
 
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	//Swap Weapon
+	PlayerInputComponent->BindAction(FName("NextWeapon"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::NextWeapon);
+	PlayerInputComponent->BindAction(FName("LastWeapon"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::LastWeapon);
+
+}
+
+void AUE_TPSCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(AUE_TPSCharacter, Weapons, COND_None);
+	DOREPLIFETIME_CONDITION(AUE_TPSCharacter, CurrentWeapon, COND_None);
+}
+
+void AUE_TPSCharacter::OnRep_CurrentWeapon(const AWeapon* OldWeapon)
+{
+	if (CurrentWeapon)
+	{
+		if (!CurrentWeapon->CurrentOwner)
+		{
+			const FTransform& PlacementTransform = CurrentWeapon->PlacementTransform * GetMesh()->GetSocketTransform(FName("weaponsocket_r"));
+			CurrentWeapon->SetActorTransform(GetMesh()->GetSocketTransform(FName("weaponsocket_r")), false, nullptr, ETeleportType::TeleportPhysics);
+			CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform, FName("weaponsocket_r"));
+
+			CurrentWeapon->Mesh->SetVisibility(true);
+			CurrentWeapon->CurrentOwner = this;
+		}
+	}
+	if (OldWeapon)
+	{
+		OldWeapon->Mesh->SetVisibility(false);
+	}
 }
 
 void AUE_TPSCharacter::Move(const FInputActionValue& Value)
@@ -124,6 +173,39 @@ void AUE_TPSCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void AUE_TPSCharacter::EquipWeapon(const int32 Index)
+{
+	if (!Weapons.IsValidIndex(Index) || CurrentWeapon == Weapons[Index]) return;
 
+	if (IsLocallyControlled())
+	{
+		CurrentIndex = Index;
 
+		const AWeapon* OldWeapon = CurrentWeapon;
+		CurrentWeapon = Weapons[Index];
+		OnRep_CurrentWeapon(OldWeapon);
+	}
+	else if (!HasAuthority())
+	{
+		Server_SetCurrentWeapon(Weapons[Index]);
+	}
+}
 
+void AUE_TPSCharacter::Server_SetCurrentWeapon_Implementation(AWeapon* NewWeapon)
+{
+	const AWeapon* OldWeapon = CurrentWeapon;
+	CurrentWeapon = NewWeapon;
+	OnRep_CurrentWeapon(OldWeapon);
+}
+
+void AUE_TPSCharacter::NextWeapon()
+{
+	const int32 Index = Weapons.IsValidIndex(CurrentIndex + 1) ? CurrentIndex + 1 : 0;
+	EquipWeapon(Index);
+}
+
+void AUE_TPSCharacter::LastWeapon()
+{
+	const int32 Index = Weapons.IsValidIndex(CurrentIndex - 1) ? CurrentIndex - 1 : Weapons.Num() - 1;
+	EquipWeapon(Index);
+}

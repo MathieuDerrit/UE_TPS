@@ -48,6 +48,9 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+	virtual void NextWeapon();
+	virtual void LastWeapon();
 			
 
 protected:
@@ -55,7 +58,33 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	// To add mapping context
-	virtual void BeginPlay();
+	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+protected:
+	// Spawn weapon default
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	TArray<TSubclassOf<class AWeapon>> DefaultWeapons;
+public:
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Replicated, Category = "State")
+	TArray<class AWeapon*> Weapons;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, ReplicatedUsing = OnRep_CurrentWeapon, Category = "State")
+	class AWeapon* CurrentWeapon;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "State")
+	int32 CurrentIndex = 0;
+
+	UFUNCTION(BlueprintCallable, Category = "Character")
+	virtual void EquipWeapon(const int32 Index);
+
+protected: 
+	UFUNCTION()
+	virtual void OnRep_CurrentWeapon(const class AWeapon* OldWeapon);
+
+	UFUNCTION(Server, Reliable)
+	void Server_SetCurrentWeapon(class AWeapon* Weapon);
+	virtual void Server_SetCurrentWeapon_Implementation(class AWeapon* Weapon);
 
 public:
 	/** Returns CameraBoom subobject **/
