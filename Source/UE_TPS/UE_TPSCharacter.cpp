@@ -12,7 +12,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "Weapon.h"
 
-
 //////////////////////////////////////////////////////////////////////////
 // AUE_TPSCharacter
 
@@ -45,9 +44,23 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
 	// Create a follow camera
+	/*
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	*/
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FollowCamera->SetRelativeLocation(FVector(0, 50.f, 90.f));
+	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	FollowCamera->SetFieldOfView(110.f);
+
+	// Create a follow camera
+	AimingCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("AimingCamera"));
+	AimingCamera->SetupAttachment(GetCapsuleComponent());
+	AimingCamera->SetRelativeLocation(FVector(-50.f, 50.f, 90.f));
+	AimingCamera->bUsePawnControlRotation = true; // Camera does not rotate relative to arm
+	AimingCamera->SetFieldOfView(80.f);
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -100,12 +113,18 @@ void AUE_TPSCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 		//Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AUE_TPSCharacter::Move);
 
+		//Looking
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AUE_TPSCharacter::Look);
 	}
 
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
 	//Swap Weapon
 	PlayerInputComponent->BindAction(FName("NextWeapon"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::NextWeapon);
 	PlayerInputComponent->BindAction(FName("LastWeapon"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::LastWeapon);
+
+	//Aiming
+	PlayerInputComponent->BindAction(FName("Aim"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::AimToTarget);
 
 }
 
@@ -127,9 +146,10 @@ void AUE_TPSCharacter::OnRep_CurrentWeapon(const AWeapon* OldWeapon)
 			CurrentWeapon->SetActorTransform(GetMesh()->GetSocketTransform(FName("weaponsocket_r")), false, nullptr, ETeleportType::TeleportPhysics);
 			CurrentWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform, FName("weaponsocket_r"));
 
-			CurrentWeapon->Mesh->SetVisibility(true);
 			CurrentWeapon->CurrentOwner = this;
 		}
+
+		CurrentWeapon->Mesh->SetVisibility(true);
 	}
 	if (OldWeapon)
 	{
@@ -139,6 +159,7 @@ void AUE_TPSCharacter::OnRep_CurrentWeapon(const AWeapon* OldWeapon)
 
 void AUE_TPSCharacter::Move(const FInputActionValue& Value)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MOOOOVVVEEEE"));
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -164,7 +185,7 @@ void AUE_TPSCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("LOOOOKKKIIINNNGGG"));
 	if (Controller != nullptr)
 	{
 		// add yaw and pitch input to controller
@@ -208,4 +229,14 @@ void AUE_TPSCharacter::LastWeapon()
 {
 	const int32 Index = Weapons.IsValidIndex(CurrentIndex - 1) ? CurrentIndex - 1 : Weapons.Num() - 1;
 	EquipWeapon(Index);
+}
+
+void AUE_TPSCharacter::AimToTarget()
+{// Switch aiming status
+	bIsAiming = !bIsAiming;
+	// Switch camera
+	AimingCamera->SetActive(bIsAiming); //TODO change to real swith depends on the weapon type
+	FollowCamera->SetActive(!bIsAiming);
+	// Show crosshair in aiming mode
+	//GetPlayerHUD()->SetCrosshairVisibility(bIsAiming);
 }
