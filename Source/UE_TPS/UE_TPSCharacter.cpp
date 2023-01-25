@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "Net/UnrealNetwork.h"
 #include "UE_TPSCharacter.h"
+#include "Net/UnrealNetwork.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -21,8 +21,8 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 		
 	// Don't rotate when the controller rotates. Let that just affect the camera.
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationPitch = true;
+	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
 
 	// Configure character movement
@@ -159,7 +159,6 @@ void AUE_TPSCharacter::OnRep_CurrentWeapon(const AWeapon* OldWeapon)
 
 void AUE_TPSCharacter::Move(const FInputActionValue& Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("MOOOOVVVEEEE"));
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -183,9 +182,10 @@ void AUE_TPSCharacter::Move(const FInputActionValue& Value)
 
 void AUE_TPSCharacter::Look(const FInputActionValue& Value)
 {
+	bUseControllerRotationPitch = true;
+	bUseControllerRotationYaw = true;
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("LOOOOKKKIIINNNGGG"));
 	if (Controller != nullptr)
 	{
 		// add yaw and pitch input to controller
@@ -239,4 +239,5 @@ void AUE_TPSCharacter::AimToTarget()
 	FollowCamera->SetActive(!bIsAiming);
 	// Show crosshair in aiming mode
 	//GetPlayerHUD()->SetCrosshairVisibility(bIsAiming);
+
 }

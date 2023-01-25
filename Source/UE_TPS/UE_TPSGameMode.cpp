@@ -2,7 +2,6 @@
 
 #include "UE_TPSGameMode.h"
 #include "UE_TPSCharacter.h"
-#include "TPS_HUD.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 

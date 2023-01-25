@@ -2,8 +2,15 @@
 
 #pragma once
 #define MYPROJECT2_API
+#include "Components/ArrowComponent.h"
+#include "ParticleHelper.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Particles/ParticleSystem.h"
+#include "Engine/DecalActor.h"
+#include "Components/DecalComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundWave.h"
 #include "CoreMinimal.h"
-
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
 
@@ -51,6 +58,25 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Configurations")
 		FTransform PlacementTransform;
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun")
+		UArrowComponent* Arrow;
+	UPROPERTY(VisibleAnywhere, Category = "Clef")
+		UParticleSystemComponent* SparksComp;
+
+	UParticleSystem* Sparks;
+	UParticleSystem* ImpactBlood;
+	UParticleSystem* ImpactBullet;
+
+	UMaterialInterface* BulletDecal;
+
+	//Audios
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "XXX") USoundWave* Audio0;
+
+	TArray<USoundWave*> Audios;
+
+	void PlayAudio(const UObject* Object, FVector Location, int Ref);
 
 };
 #undef MYPROJECT2_API
