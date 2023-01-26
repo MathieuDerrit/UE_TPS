@@ -52,6 +52,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "State")
 		class AUE_TPSCharacter* CurrentOwner;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "State")
+		class AActor* Acteur;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "State")
+		bool ToTarget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Configurations")
 		FIKProperties IKProperties;
@@ -59,21 +63,32 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Configurations")
 		FTransform PlacementTransform;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effects")
+	UParticleSystemComponent* SparksComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UParticleSystem* Sparks;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UParticleSystem* ImpactBullet;
+
+	//Audios
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	TArray<USoundWave*> Audios;
+
+	//Fire
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+	float FireRate = 5.0f;
+
+	FTimerHandle FullyAutomaticTimer;
+	FTimerHandle FullyOneTimer;
+	bool CanShoot = true;
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun")
 		UArrowComponent* Arrow;
-	UPROPERTY(VisibleAnywhere, Category = "Clef")
-		UParticleSystemComponent* SparksComp;
-
-	UParticleSystem* Sparks;
-	UParticleSystem* ImpactBullet;
 
 	UMaterialInterface* BulletDecal;
-
-	//Audios
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "XXX") USoundWave* Audio0;
-
-	TArray<USoundWave*> Audios;
 
 	void PlayAudio(const UObject* Object, FVector Location, int Ref);
 
@@ -82,7 +97,10 @@ protected:
 	FHitResult HitResult;
 
 public:
-	void Shoot(AActor* Acteur, bool ToTarget = false);
+	void Shoot();
+	void StartShoot(AActor* Acteur, bool ToTarget);
+	void StopShoot();
+	void SetShootReady();
 
 };
 #undef MYPROJECT2_API

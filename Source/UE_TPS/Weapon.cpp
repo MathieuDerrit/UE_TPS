@@ -1,8 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-
-#include "Weapon.h"
 #include "UE_TPSCharacter.h"
+#include "Weapon.h"
 
 AWeapon::AWeapon()
 {
@@ -24,21 +23,30 @@ AWeapon::AWeapon()
 	SparksComp->bAutoActivate = false;
 	SparksComp->SetupAttachment(Mesh, FName("MuzzleFlash"));
 
-	ConstructorHelpers::FObjectFinder<UParticleSystem> SparksObj(TEXT("ParticleSystem'/Game/MilitaryWeapSilver/FX/P_AssaultRifle_MuzzleFlash.P_AssaultRifle_MuzzleFlash'"));
-	if (SparksObj.Object) Sparks = SparksObj.Object;
-	SparksComp->SetTemplate(Sparks);
-
-	ConstructorHelpers::FObjectFinder<UParticleSystem> ImpactBulletObj(TEXT("ParticleSystem'/Game/MilitaryWeapSilver/FX/P_Impact_Metal_Large_01.P_Impact_Metal_Large_01'"));
-	if (ImpactBulletObj.Succeeded()) ImpactBullet = ImpactBulletObj.Object;
+	if (!Sparks)
+	{
+		ConstructorHelpers::FObjectFinder<UParticleSystem> SparksObj(TEXT("ParticleSystem'/Game/MilitaryWeapSilver/FX/P_AssaultRifle_MuzzleFlash.P_AssaultRifle_MuzzleFlash'"));
+		if (SparksObj.Object) Sparks = SparksObj.Object;
+		SparksComp->SetTemplate(Sparks);
+	}
+	if (!ImpactBullet)
+	{
+		ConstructorHelpers::FObjectFinder<UParticleSystem> ImpactBulletObj(TEXT("ParticleSystem'/Game/MilitaryWeapSilver/FX/P_Impact_Metal_Medium_01.P_Impact_Metal_Medium_01'"));
+		if (ImpactBulletObj.Succeeded()) ImpactBullet = ImpactBulletObj.Object;
+	}
 	
 	ConstructorHelpers::FObjectFinder<UMaterial> BulletDecalObj(TEXT("Material'/Game/MilitaryWeapSilver/FX/Bonus/Weapon/M_Impact_Decal.M_Impact_Decal'"));
 	if (BulletDecalObj.Succeeded()) BulletDecal = BulletDecalObj.Object;
 
 
 	// Audios
-	ConstructorHelpers::FObjectFinder<USoundWave> Audio0Obj(TEXT("SoundWave'/Game/MilitaryWeapSilver/Sound/Rifle/Wavs/RifleA_Fire_Loop_ST01.RifleA_Fire_Loop_ST01'"));
-	if (Audio0Obj.Succeeded()) Audio0 = Audio0Obj.Object;
-	Audios = { Audio0 };
+	if (Audios.Num() <= 0) 
+	{
+		USoundWave* Audio0 = NULL;
+		ConstructorHelpers::FObjectFinder<USoundWave> Audio0Obj(TEXT("SoundWave'/Game/MilitaryWeapSilver/Sound/Rifle/Wavs/RifleA_Fire_End_ST02.RifleA_Fire_End_ST02'"));
+		if (Audio0Obj.Succeeded()) Audio0 = Audio0Obj.Object;
+		Audios = { Audio0 };
+	}
 }
 
 //Play Audios
@@ -57,8 +65,42 @@ void AWeapon::BeginPlay()
 	Mesh->SetVisibility(false);
 }
 
-void AWeapon::Shoot(AActor* Acteur, bool ToTarget)
+void AWeapon::SetShootReady()
 {
+	CanShoot = true;
+}
+
+//SHOOT
+void AWeapon::StartShoot(AActor* Actor, bool Target)
+{
+	Acteur = Actor;
+	ToTarget = Target;
+	UWorld* const World = GetWorld();
+	if (CanShoot)
+	{
+		Shoot();
+		CanShoot = false;
+		World->GetTimerManager().SetTimer(FullyOneTimer, this, &AWeapon::SetShootReady, 1.0f / FireRate, false);
+	}
+	if (World != nullptr)
+	{
+		World->GetTimerManager().SetTimer(FullyAutomaticTimer, this, &AWeapon::Shoot, 1.0f / FireRate, true);
+	}
+
+}
+
+void AWeapon::StopShoot()
+{
+	UWorld* const World = GetWorld();
+	if (World != nullptr)
+	{
+		World->GetTimerManager().ClearTimer(FullyAutomaticTimer);
+	}
+}
+
+void AWeapon::Shoot()
+{
+
 	// UE_LOG(LogTemp, Warning, TEXT("Tirer"));
 
 	FString TireurClassName = Acteur->GetClass()->GetName();

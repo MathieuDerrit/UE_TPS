@@ -65,6 +65,12 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	ConstructorHelpers::FObjectFinder<UAnimMontage> MontageShootingObj(TEXT("AnimMontage'/Game/Characters/Soldier/Animations/Soldier_Firing.Soldier_Firing'"));
+	if (MontageShootingObj.Succeeded()) AM_Shooting = MontageShootingObj.Object;
+
+	ConstructorHelpers::FObjectFinder<UAnimMontage> MontageAimingObj(TEXT("AnimMontage'/Game/Characters/Soldier/Animations/Soldier_Riffle.Soldier_Riffle'"));
+	if (MontageAimingObj.Succeeded()) AM_Aiming = MontageAimingObj.Object;
 }
 
 void AUE_TPSCharacter::BeginPlay()
@@ -132,7 +138,8 @@ void AUE_TPSCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction(FName("Aim"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::AimToTarget);
 
 	//Shoot
-	PlayerInputComponent->BindAction(FName("Shoot"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::ToShoot);
+	PlayerInputComponent->BindAction(FName("Shoot"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::StartShoot);
+	PlayerInputComponent->BindAction(FName("Shoot"), EInputEvent::IE_Released, this, &AUE_TPSCharacter::StopShoot);
 
 }
 
@@ -202,6 +209,31 @@ void AUE_TPSCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+//Play Audios
+void AUE_TPSCharacter::PlayAudio(const UObject* Object, FVector Location, int Ref)
+{
+	if (Ref == 0)
+	{
+		UGameplayStatics::PlaySoundAtLocation(Object, Audios[Ref], Location);
+	}
+}
+
+//SHOOT
+void AUE_TPSCharacter::StartShoot()
+{
+	CurrentWeapon->StartShoot(this, true);
+	IsShooting = true;
+	GetMesh()->GetAnimInstance()->Montage_Play(AM_Shooting);
+}
+
+void AUE_TPSCharacter::StopShoot()
+{
+	CurrentWeapon->StopShoot();
+	IsShooting = false;
+	GetMesh()->GetAnimInstance()->Montage_Stop(0.0f, AM_Shooting);
+}
+
+//WEAPONS
 void AUE_TPSCharacter::EquipWeapon(const int32 Index)
 {
 	if (!Weapons.IsValidIndex(Index) || CurrentWeapon == Weapons[Index]) return;
@@ -218,12 +250,7 @@ void AUE_TPSCharacter::EquipWeapon(const int32 Index)
 	{
 		Server_SetCurrentWeapon(Weapons[Index]);
 	}
-}
-
-void AUE_TPSCharacter::ToShoot()
-{
-	CurrentWeapon->Shoot(this, true);
-	IsShooting = true;
+	//PlayAudio(this, GetComponentLocation(), 0);
 }
 
 void AUE_TPSCharacter::Server_SetCurrentWeapon_Implementation(AWeapon* NewWeapon)
@@ -245,12 +272,22 @@ void AUE_TPSCharacter::LastWeapon()
 	EquipWeapon(Index);
 }
 
+//AIM
 void AUE_TPSCharacter::AimToTarget()
-{// Switch aiming status
+{	
+	// Switch aiming status
 	bIsAiming = !bIsAiming;
 	// Switch camera
 	AimingCamera->SetActive(bIsAiming); //TODO change to real swith depends on the weapon type
 	FollowCamera->SetActive(!bIsAiming);
 	// Show crosshair in aiming mode
 	//GetPlayerHUD()->SetCrosshairVisibility(bIsAiming);
+	if (bIsAiming)
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(AM_Aiming);
+	}
+	else 
+	{
+		GetMesh()->GetAnimInstance()->Montage_Stop(0.0f, AM_Aiming);
+	}
 }

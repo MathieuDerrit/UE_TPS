@@ -41,6 +41,12 @@ class AUE_TPSCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shoot", meta = (AllowPrivateAccess = "true"))
+	bool IsShooting = false;
+
+	//Audios
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+	TArray<USoundWave*> Audios;
 
 public:
 	AUE_TPSCharacter();
@@ -54,10 +60,13 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	void PlayAudio(const UObject* Object, FVector Location, int Ref);
+
 	virtual void NextWeapon();
 	virtual void LastWeapon();
 	virtual void AimToTarget();
-	virtual void ToShoot();
+	virtual void StartShoot();
+	virtual void StopShoot();
 	bool bIsAiming = false;
 			
 
@@ -86,8 +95,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void EquipWeapon(const int32 Index);
 
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "State")
-	bool IsShooting = false;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
+	UAnimMontage* AM_Shooting;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
+	UAnimMontage* AM_Aiming;
 
 
 protected: 
