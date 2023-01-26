@@ -61,6 +61,7 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 	AimingCamera->SetRelativeLocation(FVector(-50.f, 50.f, 90.f));
 	AimingCamera->bUsePawnControlRotation = true; // Camera does not rotate relative to arm
 	AimingCamera->SetFieldOfView(80.f);
+	AimingCamera->SetActive(false);
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -68,6 +69,10 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 
 void AUE_TPSCharacter::BeginPlay()
 {
+	AimingCamera->SetActive(false);
+	bUseControllerRotationPitch = true;
+	bUseControllerRotationYaw = true;
+
 	// Call the base class  
 	Super::BeginPlay();
 
@@ -126,6 +131,9 @@ void AUE_TPSCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	//Aiming
 	PlayerInputComponent->BindAction(FName("Aim"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::AimToTarget);
 
+	//Shoot
+	PlayerInputComponent->BindAction(FName("Shoot"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::ToShoot);
+
 }
 
 void AUE_TPSCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -182,8 +190,6 @@ void AUE_TPSCharacter::Move(const FInputActionValue& Value)
 
 void AUE_TPSCharacter::Look(const FInputActionValue& Value)
 {
-	bUseControllerRotationPitch = true;
-	bUseControllerRotationYaw = true;
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 	if (Controller != nullptr)
@@ -191,6 +197,8 @@ void AUE_TPSCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *LookAxisVector.ToString()));
 	}
 }
 
@@ -210,6 +218,12 @@ void AUE_TPSCharacter::EquipWeapon(const int32 Index)
 	{
 		Server_SetCurrentWeapon(Weapons[Index]);
 	}
+}
+
+void AUE_TPSCharacter::ToShoot()
+{
+	CurrentWeapon->Shoot(this, true);
+	IsShooting = true;
 }
 
 void AUE_TPSCharacter::Server_SetCurrentWeapon_Implementation(AWeapon* NewWeapon)
@@ -239,5 +253,4 @@ void AUE_TPSCharacter::AimToTarget()
 	FollowCamera->SetActive(!bIsAiming);
 	// Show crosshair in aiming mode
 	//GetPlayerHUD()->SetCrosshairVisibility(bIsAiming);
-
 }

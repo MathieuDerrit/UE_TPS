@@ -66,7 +66,6 @@ protected:
 		UParticleSystemComponent* SparksComp;
 
 	UParticleSystem* Sparks;
-	UParticleSystem* ImpactBlood;
 	UParticleSystem* ImpactBullet;
 
 	UMaterialInterface* BulletDecal;
@@ -77,6 +76,13 @@ protected:
 	TArray<USoundWave*> Audios;
 
 	void PlayAudio(const UObject* Object, FVector Location, int Ref);
+
+	void DrawBulletImpact();
+
+	FHitResult HitResult;
+
+public:
+	void Shoot(AActor* Acteur, bool ToTarget = false);
 
 };
 #undef MYPROJECT2_API

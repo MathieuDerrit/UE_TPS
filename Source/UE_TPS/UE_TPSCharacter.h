@@ -57,6 +57,7 @@ protected:
 	virtual void NextWeapon();
 	virtual void LastWeapon();
 	virtual void AimToTarget();
+	virtual void ToShoot();
 	bool bIsAiming = false;
 			
 
@@ -84,6 +85,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void EquipWeapon(const int32 Index);
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "State")
+	bool IsShooting = false;
+
 
 protected: 
 	UFUNCTION()
