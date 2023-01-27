@@ -12,6 +12,7 @@ UTargetClass::UTargetClass()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	HitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HitBox"));
+	 
 	// ...
 }
 
@@ -21,6 +22,12 @@ void UTargetClass::BeginPlay()
 {
 	Super::BeginPlay();
 	HitBox->OnComponentBeginOverlap.AddDynamic(this, &UTargetClass::OnOverlapBegin);
+	HitBoxLocation = GetOwner()->GetActorLocation();
+	HitBox->SetWorldLocation(HitBoxLocation);
+	HitBox->SetWorldScale3D(FVector(3.0f, 3.0f, 3.0f));
+	CurrentRotation = GetOwner()->GetActorRotation();
+	HitRotation = CurrentRotation + FRotator(0.0f, -40.0f, 0.0f);
+	HitRotationReversed = CurrentRotation + FRotator(0.0f, 40.0f, 0.0f);
 
 	// ...
 	
@@ -39,9 +46,18 @@ void UTargetClass::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 {
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Overlap Test"));
 	
-	GetOwner()->SetActorRotation(FRotator(0.0f, 115.0f, 0.0f), ETeleportType::TeleportPhysics);
+	if (isReverse)
+	{
+		//GetOwner()->SetActorRotation(FRotator(0.0f, 115.0f, 0.0f), ETeleportType::TeleportPhysics);
+		GetOwner()->SetActorRotation(HitRotation, ETeleportType::TeleportPhysics);
+	}
+	else
+	{
+		//GetOwner()->SetActorRotation(FRotator(0.0f, -98.0f, 0.0f), ETeleportType::TeleportPhysics);
+		GetOwner()->SetActorRotation(HitRotationReversed, ETeleportType::TeleportPhysics);
+	}
 
 	//FString Test = GetOwner()->GetClass()->GetName();
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("%s"), *Test));
-
 }
+
