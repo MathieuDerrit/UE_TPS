@@ -28,6 +28,7 @@ void UTargetClass::BeginPlay()
 	CurrentRotation = GetOwner()->GetActorRotation();
 	HitRotation = CurrentRotation + FRotator(0.0f, -40.0f, 0.0f);
 	HitRotationReversed = CurrentRotation + FRotator(0.0f, 40.0f, 0.0f);
+	Score = 0;
 
 	// ...
 	
@@ -44,18 +45,25 @@ void UTargetClass::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 
 void UTargetClass::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Overlap Test"));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Overlap Test"));
 	
 	if (isReverse)
 	{
 		//GetOwner()->SetActorRotation(FRotator(0.0f, 115.0f, 0.0f), ETeleportType::TeleportPhysics);
 		GetOwner()->SetActorRotation(HitRotation, ETeleportType::TeleportPhysics);
+		//Score = Score ++;
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, FString::Printf(TEXT("%f"), Score));
 	}
 	else
 	{
 		//GetOwner()->SetActorRotation(FRotator(0.0f, -98.0f, 0.0f), ETeleportType::TeleportPhysics);
 		GetOwner()->SetActorRotation(HitRotationReversed, ETeleportType::TeleportPhysics);
+		//Score = Score ++;
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, FString::Printf(TEXT("%s"), Score));
 	}
+
+	Score = Score +1;
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, FString::Printf(TEXT("%lld"), Score));
 
 	//FString Test = GetOwner()->GetClass()->GetName();
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("%s"), *Test));
