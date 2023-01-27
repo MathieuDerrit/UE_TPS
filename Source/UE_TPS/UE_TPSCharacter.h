@@ -95,6 +95,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void EquipWeapon(const int32 Index);
 
+	UFUNCTION(BlueprintCallable, Category = "Character")
+	virtual void DropWeapon();
+
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* AM_Shooting;
 

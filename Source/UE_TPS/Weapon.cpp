@@ -35,7 +35,7 @@ AWeapon::AWeapon()
 		if (ImpactBulletObj.Succeeded()) ImpactBullet = ImpactBulletObj.Object;
 	}
 	
-	ConstructorHelpers::FObjectFinder<UMaterial> BulletDecalObj(TEXT("Material'/Game/MilitaryWeapSilver/FX/Bonus/Weapon/M_Impact_Decal.M_Impact_Decal'"));
+	ConstructorHelpers::FObjectFinder<UMaterial> BulletDecalObj(TEXT("Material'/Game/Effects/Materials/Weapon/M_Impact_Decal.M_Impact_Decal'"));
 	if (BulletDecalObj.Succeeded()) BulletDecal = BulletDecalObj.Object;
 
 
@@ -63,6 +63,13 @@ void AWeapon::BeginPlay()
 	Super::BeginPlay();
 	if(!CurrentOwner)
 	Mesh->SetVisibility(false);
+}
+
+void AWeapon::Drop()
+{
+	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	Mesh->SetSimulatePhysics(true);
+	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
 
 void AWeapon::SetShootReady()

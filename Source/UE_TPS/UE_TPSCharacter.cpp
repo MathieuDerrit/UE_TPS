@@ -141,6 +141,9 @@ void AUE_TPSCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	PlayerInputComponent->BindAction(FName("Shoot"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::StartShoot);
 	PlayerInputComponent->BindAction(FName("Shoot"), EInputEvent::IE_Released, this, &AUE_TPSCharacter::StopShoot);
 
+	//Drop Weapon
+	PlayerInputComponent->BindAction(FName("DropWeapon"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::DropWeapon);
+
 }
 
 void AUE_TPSCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -251,6 +254,14 @@ void AUE_TPSCharacter::EquipWeapon(const int32 Index)
 		Server_SetCurrentWeapon(Weapons[Index]);
 	}
 	//PlayAudio(this, GetComponentLocation(), 0);
+}
+
+void AUE_TPSCharacter::DropWeapon()
+{
+	if (Weapons.Num() >= 1) {
+		CurrentWeapon->Drop();
+		AUE_TPSCharacter::NextWeapon();
+	}
 }
 
 void AUE_TPSCharacter::Server_SetCurrentWeapon_Implementation(AWeapon* NewWeapon)
