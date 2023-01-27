@@ -101,6 +101,7 @@ public:
 	void StartShoot(AActor* Acteur, bool ToTarget);
 	void StopShoot();
 	void SetShootReady();
+	void Drop();
 
 };
 #undef MYPROJECT2_API
