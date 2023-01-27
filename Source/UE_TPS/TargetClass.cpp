@@ -21,14 +21,15 @@ UTargetClass::UTargetClass()
 void UTargetClass::BeginPlay()
 {
 	Super::BeginPlay();
-	HitBox->OnComponentBeginOverlap.AddDynamic(this, &UTargetClass::OnOverlapBegin);
-	HitBoxLocation = GetOwner()->GetActorLocation();
-	HitBox->SetWorldLocation(HitBoxLocation);
-	HitBox->SetWorldScale3D(FVector(3.0f, 3.0f, 3.0f));
+	
+	//HitBox->OnComponentBeginOverlap.AddDynamic(this, &UTargetClass::OnOverlapBegin);
+	//HitBoxLocation = GetOwner()->GetActorLocation();
+	//HitBox->SetWorldLocation(HitBoxLocation);
+	//HitBox->SetWorldScale3D(FVector(3.0f, 3.0f, 3.0f));
 	CurrentRotation = GetOwner()->GetActorRotation();
 	HitRotation = CurrentRotation + FRotator(0.0f, -40.0f, 0.0f);
 	HitRotationReversed = CurrentRotation + FRotator(0.0f, 40.0f, 0.0f);
-
+	
 	// ...
 	
 }
@@ -44,8 +45,14 @@ void UTargetClass::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 
 void UTargetClass::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	Hit();
+}
+
+void UTargetClass::Hit()
+{
+
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Overlap Test"));
-	
+
 	if (isReverse)
 	{
 		//GetOwner()->SetActorRotation(FRotator(0.0f, 115.0f, 0.0f), ETeleportType::TeleportPhysics);

@@ -71,6 +71,10 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 
 	ConstructorHelpers::FObjectFinder<UAnimMontage> MontageAimingObj(TEXT("AnimMontage'/Game/Characters/Soldier/Animations/Soldier_Riffle.Soldier_Riffle'"));
 	if (MontageAimingObj.Succeeded()) AM_Aiming = MontageAimingObj.Object;
+
+	collectionRange = CreateDefaultSubobject<USphereComponent>(TEXT("CollectionRange"));
+	collectionRange->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform, FName("weaponsocket_r"));
+	collectionRange->SetSphereRadius(100.0f);
 }
 
 void AUE_TPSCharacter::BeginPlay()
@@ -144,6 +148,9 @@ void AUE_TPSCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	//Drop Weapon
 	PlayerInputComponent->BindAction(FName("DropWeapon"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::DropWeapon);
 
+	//Pick Weapon
+	PlayerInputComponent->BindAction(FName("PickWeapon"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::PickWeapon);
+
 }
 
 void AUE_TPSCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -169,9 +176,12 @@ void AUE_TPSCharacter::OnRep_CurrentWeapon(const AWeapon* OldWeapon)
 
 		CurrentWeapon->Mesh->SetVisibility(true);
 	}
-	if (OldWeapon)
+	if (OldWeapon && !IsDrop)
 	{
 		OldWeapon->Mesh->SetVisibility(false);
+	}
+	else if (IsDrop) {
+		IsDrop = false;
 	}
 }
 
@@ -239,13 +249,13 @@ void AUE_TPSCharacter::StopShoot()
 //WEAPONS
 void AUE_TPSCharacter::EquipWeapon(const int32 Index)
 {
+	const AWeapon* OldWeapon = CurrentWeapon;
+
 	if (!Weapons.IsValidIndex(Index) || CurrentWeapon == Weapons[Index]) return;
 
 	if (IsLocallyControlled())
 	{
 		CurrentIndex = Index;
-
-		const AWeapon* OldWeapon = CurrentWeapon;
 		CurrentWeapon = Weapons[Index];
 		OnRep_CurrentWeapon(OldWeapon);
 	}
@@ -258,9 +268,42 @@ void AUE_TPSCharacter::EquipWeapon(const int32 Index)
 
 void AUE_TPSCharacter::DropWeapon()
 {
-	if (Weapons.Num() >= 1) {
+	if (Weapons.Num() > 1) {
+
 		CurrentWeapon->Drop();
+		IsDrop = true;
+		int i;
+		for (i = 0; i < Weapons.Num(); i++)
+		{
+			if (Weapons[i] == CurrentWeapon)
+			{
+				Weapons.Remove(CurrentWeapon);
+			}
+		}
 		AUE_TPSCharacter::NextWeapon();
+	}
+}
+
+void AUE_TPSCharacter::PickWeapon()
+{
+	TArray<AActor*> inRangeItems;
+	collectionRange->GetOverlappingActors(inRangeItems);
+	for (int i = 0; i < inRangeItems.Num(); i++)
+	{
+		AWeapon* const testItem = Cast<AWeapon>(inRangeItems[i]);
+		if (testItem && !testItem->IsPendingKill())
+		{
+			/*
+			AWeapon newWeapon = testItem->Pick();
+
+			const FTransform& PlacementTransform = newWeapon.PlacementTransform * GetMesh()->GetSocketTransform(FName("weaponsocket_r"));
+			newWeapon.SetActorTransform(GetMesh()->GetSocketTransform(FName("weaponsocket_r")), false, nullptr, ETeleportType::TeleportPhysics);
+			newWeapon.AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform, FName("weaponsocket_r"));
+			newWeapon.CurrentOwner = this;
+			newWeapon.Mesh->SetVisibility(true);
+			*/
+		}
+
 	}
 }
 

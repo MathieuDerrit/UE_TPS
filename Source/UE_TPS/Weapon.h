@@ -10,6 +10,7 @@
 #include "Components/DecalComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundWave.h"
+#include "TargetClass.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
@@ -102,6 +103,7 @@ public:
 	void StopShoot();
 	void SetShootReady();
 	void Drop();
+	//AWeapon Pick();
 
 };
 #undef MYPROJECT2_API

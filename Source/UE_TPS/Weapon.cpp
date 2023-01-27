@@ -71,7 +71,14 @@ void AWeapon::Drop()
 	Mesh->SetSimulatePhysics(true);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
-
+/*
+AWeapon AWeapon::Pick()
+{
+	Mesh->SetSimulatePhysics(false);
+	//Mesh->SetCollisionEnabled()
+	return *this;
+}
+*/
 void AWeapon::SetShootReady()
 {
 	CanShoot = true;
@@ -216,6 +223,7 @@ void AWeapon::Shoot()
 		if (Acteur2)
 		{
 			FString ClassName = Acteur2->GetClass()->GetName();
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%lld"), *ClassName));
 			// UE_LOG (LogTemp, Warning, TEXT ("ClassName = %s"), *ClassName);
 			// if (ClassName == "C:\Program Files\Epic Games\UE_5.1\Engine\Source\Runtime\CoreUObject\Public\Templates\Casts.h(298) : error C2976: 'TCastImpl': too few template arguments")
 
@@ -237,6 +245,12 @@ void AWeapon::Shoot()
 
 				// Localisation de l'impulsion x Force d'impact
 				if (Comp) Comp->AddImpulse(HitResult.Location * 100.f);
+			}
+
+			if (S == "Target_C" || S == "TargetReverse_C")
+			{
+				UTargetClass* Target = HitResult.GetActor()->FindComponentByClass<UTargetClass>();
+				if (Target) Target->Hit();
 			}
 		}
 	}

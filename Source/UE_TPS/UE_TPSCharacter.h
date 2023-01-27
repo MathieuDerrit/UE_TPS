@@ -4,6 +4,7 @@
 #include "Weapon.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/SphereComponent.h"
 #include "InputActionValue.h"
 #include "UE_TPSCharacter.generated.h"
 
@@ -41,8 +42,11 @@ class AUE_TPSCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Shoot", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	bool IsShooting = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
+	bool IsDrop = false;
 
 	//Audios
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio", meta = (AllowPrivateAccess = "true"))
@@ -97,6 +101,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void DropWeapon();
+
+	UFUNCTION(BlueprintCallable, Category = "Character")
+	virtual void PickWeapon();
+
+	UPROPERTY(EditAnywhere, Category = "Pickup", meta = (AllowPrivateAccess = "true"))
+		USphereComponent* collectionRange;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* AM_Shooting;
