@@ -244,7 +244,7 @@ void AWeapon::Shoot()
 				UStaticMeshComponent* Comp = Cast<UStaticMeshComponent>(HitResult.GetActor()->GetRootComponent());
 
 				// Localisation de l'impulsion x Force d'impact
-				if (Comp) Comp->AddImpulse(HitResult.Location * 100.f);
+				if (Comp && Comp->IsSimulatingPhysics()) Comp->AddImpulse(HitResult.Location * 100.f);
 			}
 
 			if (S == "Target_C" || S == "TargetReverse_C")
