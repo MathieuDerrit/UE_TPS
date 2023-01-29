@@ -19,7 +19,7 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-		
+
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = true;
 	bUseControllerRotationYaw = true;
@@ -286,24 +286,25 @@ void AUE_TPSCharacter::DropWeapon()
 
 void AUE_TPSCharacter::PickWeapon()
 {
-	TArray<AActor*> inRangeItems;
-	collectionRange->GetOverlappingActors(inRangeItems);
-	for (int i = 0; i < inRangeItems.Num(); i++)
+	TArray<AActor*> Result;
+	GetOverlappingActors(Result, AWeapon::StaticClass());
+	for (AActor* Actor : Result)
 	{
-		AWeapon* const testItem = Cast<AWeapon>(inRangeItems[i]);
-		if (testItem && !testItem->IsPendingKill())
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *Actor->GetName()));
+		if (Actor->ActorHasTag("Pickupable"))
 		{
-			/*
-			AWeapon newWeapon = testItem->Pick();
+			AWeapon* Weapon = Cast <AWeapon>(Actor);
+			if (Weapon)
+			{
+				const FTransform& PlacementTransform = Weapon->PlacementTransform * GetMesh()->GetSocketTransform(FName("weaponsocket_r"));
+				Weapon->SetActorTransform(GetMesh()->GetSocketTransform(FName("weaponsocket_r")), false, nullptr, ETeleportType::TeleportPhysics);
+				Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform, FName("weaponsocket_r"));
+				Weapon->CurrentOwner = this;
 
-			const FTransform& PlacementTransform = newWeapon.PlacementTransform * GetMesh()->GetSocketTransform(FName("weaponsocket_r"));
-			newWeapon.SetActorTransform(GetMesh()->GetSocketTransform(FName("weaponsocket_r")), false, nullptr, ETeleportType::TeleportPhysics);
-			newWeapon.AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform, FName("weaponsocket_r"));
-			newWeapon.CurrentOwner = this;
-			newWeapon.Mesh->SetVisibility(true);
-			*/
+				Weapons.Add(Weapon);
+				EquipWeapon(Weapons.Num() - 1);
+			}
 		}
-
 	}
 }
 

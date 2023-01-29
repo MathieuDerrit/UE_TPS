@@ -58,6 +58,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "State")
 		bool ToTarget;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "State")
+		bool IsVisible = true;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Configurations")
 		FIKProperties IKProperties;
 

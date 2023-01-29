@@ -7,12 +7,23 @@ AWeapon::AWeapon()
 {
 	PrimaryActorTick.bCanEverTick = false;
 	SetReplicates(true);
+	Tags = { "Pickupable" };
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
 
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
+
+	//Create activate trigger radius
+	USphereComponent* activateRadius = CreateDefaultSubobject<USphereComponent>(TEXT("Activate Radius"));
+	activateRadius->InitSphereRadius(100.0f);
+	activateRadius->SetSphereRadius(100.0f);
+	activateRadius->SetGenerateOverlapEvents(true);
+	activateRadius->SetupAttachment(RootComponent);
+	activateRadius->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+	//activateRadius->OnComponentBeginOverlap.AddDynamic(this, &AScrollsCharacter::OnOverlapActivateSphere);
+	activateRadius->bHiddenInGame = false;
 
 	//Arrow
 	Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
@@ -61,7 +72,7 @@ void AWeapon::PlayAudio(const UObject* Object, FVector Location, int Ref)
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	if(!CurrentOwner)
+	if(!CurrentOwner && !IsVisible)
 	Mesh->SetVisibility(false);
 }
 
