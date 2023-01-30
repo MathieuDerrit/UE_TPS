@@ -71,10 +71,6 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 
 	ConstructorHelpers::FObjectFinder<UAnimMontage> MontageAimingObj(TEXT("AnimMontage'/Game/Characters/Soldier/Animations/Soldier_Riffle.Soldier_Riffle'"));
 	if (MontageAimingObj.Succeeded()) AM_Aiming = MontageAimingObj.Object;
-
-	collectionRange = CreateDefaultSubobject<USphereComponent>(TEXT("CollectionRange"));
-	collectionRange->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform, FName("weaponsocket_r"));
-	collectionRange->SetSphereRadius(100.0f);
 }
 
 void AUE_TPSCharacter::BeginPlay()
@@ -290,14 +286,16 @@ void AUE_TPSCharacter::PickWeapon()
 	GetOverlappingActors(Result, AWeapon::StaticClass());
 	for (AActor* Actor : Result)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *Actor->GetName()));
 		if (Actor->ActorHasTag("Pickupable"))
 		{
 			AWeapon* Weapon = Cast <AWeapon>(Actor);
-			if (Weapon)
+			if (Weapon && !Weapon->CurrentOwner)
 			{
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *Actor->GetName()));
+				Weapon->Pick();
 				const FTransform& PlacementTransform = Weapon->PlacementTransform * GetMesh()->GetSocketTransform(FName("weaponsocket_r"));
-				Weapon->SetActorTransform(GetMesh()->GetSocketTransform(FName("weaponsocket_r")), false, nullptr, ETeleportType::TeleportPhysics);
+				//Weapon->SetActorTransform(GetMesh()->GetSocketTransform(FName("weaponsocket_r")), false, nullptr, ETeleportType::TeleportPhysics);
+				Weapon->SetActorTransform(PlacementTransform);
 				Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform, FName("weaponsocket_r"));
 				Weapon->CurrentOwner = this;
 

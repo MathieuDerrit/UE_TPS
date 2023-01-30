@@ -4,7 +4,6 @@
 #include "Weapon.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Components/SphereComponent.h"
 #include "InputActionValue.h"
 #include "UE_TPSCharacter.generated.h"
 
@@ -104,9 +103,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void PickWeapon();
-
-	UPROPERTY(EditAnywhere, Category = "Pickup", meta = (AllowPrivateAccess = "true"))
-		USphereComponent* collectionRange;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* AM_Shooting;

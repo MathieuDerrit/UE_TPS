@@ -3,6 +3,7 @@
 #pragma once
 #define MYPROJECT2_API
 #include "Components/ArrowComponent.h"
+#include "Components/SphereComponent.h"
 #include "ParticleHelper.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Particles/ParticleSystem.h"
@@ -81,7 +82,7 @@ public:
 	TArray<USoundWave*> Audios;
 
 	//Fire
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
 	float FireRate = 5.0f;
 
 	FTimerHandle FullyAutomaticTimer;
@@ -91,6 +92,8 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun")
 		UArrowComponent* Arrow;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sphere")
+		USphereComponent* activateRadius;
 
 	UMaterialInterface* BulletDecal;
 
@@ -106,7 +109,7 @@ public:
 	void StopShoot();
 	void SetShootReady();
 	void Drop();
-	//AWeapon Pick();
+	void Pick();
 
 };
 #undef MYPROJECT2_API

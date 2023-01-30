@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "UE_TPSCharacter.h"
 #include "Weapon.h"
+#include "UE_TPSCharacter.h"
 
 AWeapon::AWeapon()
 {
@@ -16,11 +16,11 @@ AWeapon::AWeapon()
 	Mesh->SetupAttachment(Root);
 
 	//Create activate trigger radius
-	USphereComponent* activateRadius = CreateDefaultSubobject<USphereComponent>(TEXT("Activate Radius"));
+	activateRadius = CreateDefaultSubobject<USphereComponent>(TEXT("Activate Radius"));
 	activateRadius->InitSphereRadius(100.0f);
 	activateRadius->SetSphereRadius(100.0f);
 	activateRadius->SetGenerateOverlapEvents(true);
-	activateRadius->SetupAttachment(RootComponent);
+	activateRadius->SetupAttachment(Mesh, FName("AmmoEject"));
 	activateRadius->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	//activateRadius->OnComponentBeginOverlap.AddDynamic(this, &AScrollsCharacter::OnOverlapActivateSphere);
 	activateRadius->bHiddenInGame = false;
@@ -72,24 +72,32 @@ void AWeapon::PlayAudio(const UObject* Object, FVector Location, int Ref)
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	if(!CurrentOwner && !IsVisible)
-	Mesh->SetVisibility(false);
+	if (!CurrentOwner && !IsVisible)
+	{
+		Mesh->SetVisibility(false);
+		activateRadius->SetSphereRadius(0.0f);
+	}
+	
 }
 
 void AWeapon::Drop()
 {
 	DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	Mesh->SetSimulatePhysics(true);
-	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	Mesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	CurrentOwner = nullptr;
+	activateRadius->SetSphereRadius(100.0f);
 }
-/*
-AWeapon AWeapon::Pick()
+
+void AWeapon::Pick()
 {
 	Mesh->SetSimulatePhysics(false);
-	//Mesh->SetCollisionEnabled()
-	return *this;
+	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Mesh->ResetRelativeTransform();
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%lld"), Mesh->GetRelativeTransform().ToString()));
+	activateRadius->SetSphereRadius(0.0f);
 }
-*/
+
 void AWeapon::SetShootReady()
 {
 	CanShoot = true;
