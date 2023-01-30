@@ -16,4 +16,10 @@ class UE_TPS_API ATPSGameMode : public AGameModeBase
 	
 public:
 	ATPSGameMode();
+
+	UFUNCTION()
+		void AddScore(int Points);
+
+	UPROPERTY(EditAnywhere)
+		int Score = 0;
 };

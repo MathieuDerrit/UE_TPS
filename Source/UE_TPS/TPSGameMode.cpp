@@ -2,7 +2,6 @@
 
 
 #include "TPSGameMode.h"
-#include "TPSGameMode.h"
 #include "UObject/ConstructorHelpers.h"
 
 ATPSGameMode::ATPSGameMode()
@@ -13,4 +12,10 @@ ATPSGameMode::ATPSGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+}
+
+void ATPSGameMode::AddScore(int Points)
+{
+	Score += Points;
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("%lld"), Score));
 }
