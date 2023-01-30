@@ -43,6 +43,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		FRotator HitRotationReversed;
 
+	UPROPERTY(EditAnywhere)
+		int Score;
+
 	UFUNCTION()
 		void Hit();
 
