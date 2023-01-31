@@ -48,7 +48,7 @@ public:
 	UFUNCTION()
 		void Hit();
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void Scoring();
 
 	UFUNCTION()

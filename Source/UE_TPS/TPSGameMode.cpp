@@ -14,8 +14,9 @@ ATPSGameMode::ATPSGameMode()
 	}
 }
 
-void ATPSGameMode::AddScore(int Points)
+void ATPSGameMode::AddScore(int Points) 
 {
 	Score += Points;
+//	return Score;
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("%lld"), Score));
 }
