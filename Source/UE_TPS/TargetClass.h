@@ -45,6 +45,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		FRotator HitRotationReversed;
 
+	UPROPERTY(EditAnywhere)
+		bool isHit = false;
+
 	UFUNCTION()
 		void Hit();
 	

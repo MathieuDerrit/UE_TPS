@@ -79,5 +79,8 @@ void UTargetClass::Scoring()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("4"), Score));
 	ATPSGameMode* gm = Cast<ATPSGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	gm->AddScore(1);
+	if (isHit == false) {
+		gm->AddScore(1);
+		isHit = true;
+	}
 }
