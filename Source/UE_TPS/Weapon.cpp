@@ -28,7 +28,6 @@ AWeapon::AWeapon()
 	//Arrow
 	Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
 	Arrow->SetupAttachment(Mesh, FName("MuzzleFlash"));
-
 	//Sparks
 	SparksComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Etincelles"));
 	SparksComp->bAutoActivate = false;

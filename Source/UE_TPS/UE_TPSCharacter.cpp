@@ -55,14 +55,6 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 	FollowCamera->SetFieldOfView(110.f);
 
-	// Create a follow camera
-	AimingCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("AimingCamera"));
-	AimingCamera->SetupAttachment(GetCapsuleComponent());
-	AimingCamera->SetRelativeLocation(FVector(-50.f, 50.f, 90.f));
-	AimingCamera->bUsePawnControlRotation = true; // Camera does not rotate relative to arm
-	AimingCamera->SetFieldOfView(80.f);
-	AimingCamera->SetActive(false);
-
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
@@ -75,7 +67,6 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 
 void AUE_TPSCharacter::BeginPlay()
 {
-	AimingCamera->SetActive(false);
 	bUseControllerRotationPitch = true;
 	bUseControllerRotationYaw = true;
 
@@ -304,6 +295,13 @@ void AUE_TPSCharacter::PickWeapon()
 			}
 		}
 	}
+
+	GetOverlappingActors(Result, AAmmo::StaticClass());
+	for (AActor* Actor : Result)
+	{
+		AAmmo* Ammo = Cast <AAmmo>(Actor);
+		//Ammo->CollectAmmo(*this);
+	}
 }
 
 void AUE_TPSCharacter::Server_SetCurrentWeapon_Implementation(AWeapon* NewWeapon)
@@ -331,8 +329,13 @@ void AUE_TPSCharacter::AimToTarget()
 	// Switch aiming status
 	bIsAiming = !bIsAiming;
 	// Switch camera
-	AimingCamera->SetActive(bIsAiming); //TODO change to real swith depends on the weapon type
-	FollowCamera->SetActive(!bIsAiming);
+	if (bIsAiming) {
+		FollowCamera->SetRelativeLocation(FVector(0, 50.f, 90.f));
+	}
+	else {
+		FollowCamera->SetRelativeLocation(FVector(300.f, 50.f, 90.f));
+	}
+	
 	// Show crosshair in aiming mode
 	//GetPlayerHUD()->SetCrosshairVisibility(bIsAiming);
 	if (bIsAiming)

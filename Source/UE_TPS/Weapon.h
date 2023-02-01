@@ -7,6 +7,7 @@
 #include "ParticleHelper.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Particles/ParticleSystem.h"
+#include "Ammo.h"
 #include "Engine/DecalActor.h"
 #include "Components/DecalComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -15,6 +16,16 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
+
+UENUM(BlueprintType)
+enum class WeaponType : uint8 {
+	Rifle_Weapon = 0		UMETA(DisplayName = "Rifle_Weapon"),
+	Pistol_Weapon = 1		UMETA(DisplayName = "Pistol_Weapon"),
+	ShootWeapon_Weapon = 2		UMETA(DisplayName = "ShootWeapon_Weapon"),
+	MachineWeapon_Weapon = 3		UMETA(DisplayName = "MachineWeapon_Weapon"),
+	Sniper_Weapon = 4		UMETA(DisplayName = "Sniper_Weapon"),
+	RPG_Weapon = 5		UMETA(DisplayName = "RPG_Weapon")
+};
 
 USTRUCT(BlueprintType)
 struct FIKProperties
@@ -81,6 +92,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
 	TArray<USoundWave*> Audios;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
+	int currentClipAmmo = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
+	int maxClipAmmo = 25;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	TEnumAsByte<WeaponType> WeaponType = WeaponType::Rifle_Weapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+	TEnumAsByte<AmmoType> AmmoType = AmmoType::Rifle_Ammo;
+
 	//Fire
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
 	float FireRate = 5.0f;
@@ -90,7 +113,7 @@ public:
 	bool CanShoot = true;
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gun")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
 		UArrowComponent* Arrow;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sphere")
 		USphereComponent* activateRadius;
