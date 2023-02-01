@@ -174,6 +174,7 @@ void AWeapon::Shoot()
 
 	if (Player->CurrentWeapon->MagazineAmmo <= 0)
 	{
+		Player->StopAMShooting();
 		return;
 	}
 	else {

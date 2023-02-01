@@ -63,6 +63,10 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 
 	ConstructorHelpers::FObjectFinder<UAnimMontage> MontageAimingObj(TEXT("AnimMontage'/Game/Characters/Soldier/Animations/Soldier_Riffle.Soldier_Riffle'"));
 	if (MontageAimingObj.Succeeded()) AM_Aiming = MontageAimingObj.Object;
+
+
+	ConstructorHelpers::FObjectFinder<UAnimMontage> MontageReloadingObj(TEXT("AnimMontage'/Game/Characters/Soldier/Animations/AM_Reloading.AM_Reloading'"));
+	if (MontageReloadingObj.Succeeded()) AM_Reloading = MontageReloadingObj.Object;
 }
 
 void AUE_TPSCharacter::BeginPlay()
@@ -140,6 +144,8 @@ void AUE_TPSCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 
 	//Reaload
 	PlayerInputComponent->BindAction(FName("Reload"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::Reload);
+
+	PlayerInputC = PlayerInputComponent;
 
 }
 
@@ -224,15 +230,20 @@ void AUE_TPSCharacter::PlayAudio(const UObject* Object, FVector Location, int Re
 //SHOOT
 void AUE_TPSCharacter::StartShoot()
 {
+	GetMesh()->GetAnimInstance()->Montage_Play(AM_Shooting, CurrentWeapon->FireRate);
 	CurrentWeapon->StartShoot(this, true);
 	IsShooting = true;
-	GetMesh()->GetAnimInstance()->Montage_Play(AM_Shooting);
 }
 
 void AUE_TPSCharacter::StopShoot()
 {
+	StopAMShooting();
 	CurrentWeapon->StopShoot();
 	IsShooting = false;
+}
+
+void AUE_TPSCharacter::StopAMShooting()
+{
 	GetMesh()->GetAnimInstance()->Montage_Stop(0.0f, AM_Shooting);
 }
 
@@ -309,7 +320,31 @@ void AUE_TPSCharacter::Pick()
 
 void AUE_TPSCharacter::Reload()
 {
+	GetMesh()->GetAnimInstance()->Montage_Play(AM_Reloading);
 	CurrentWeapon->Reload();
+	
+	//Swap Weapon
+	PlayerInputC->RemoveActionBinding(FName("NextWeapon"), EInputEvent::IE_Pressed);
+	PlayerInputC->RemoveActionBinding(FName("LastWeapon"), EInputEvent::IE_Pressed);
+
+	//Aiming
+	PlayerInputC->RemoveActionBinding(FName("Aim"), EInputEvent::IE_Pressed);
+
+	//Shoot
+	PlayerInputC->RemoveActionBinding(FName("Shoot"), EInputEvent::IE_Pressed);
+	PlayerInputC->RemoveActionBinding(FName("Shoot"), EInputEvent::IE_Released);
+
+	//Drop Weapon
+	PlayerInputC->RemoveActionBinding(FName("DropWeapon"), EInputEvent::IE_Pressed);
+
+	//Pick
+	PlayerInputC->RemoveActionBinding(FName("Pick"), EInputEvent::IE_Pressed);
+}
+
+void AUE_TPSCharacter::ReloadFinish()
+{
+	//GetMesh()->GetAnimInstance()->Montage_Stop(0.0f, AM_Reloading);
+	SetupPlayerInputComponent(PlayerInputC);
 }
 
 void AUE_TPSCharacter::Server_SetCurrentWeapon_Implementation(AWeapon* NewWeapon)

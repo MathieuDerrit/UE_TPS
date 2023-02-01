@@ -84,6 +84,10 @@ protected:
 	// Spawn weapon default
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	TArray<TSubclassOf<class AWeapon>> DefaultWeapons;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UInputComponent* PlayerInputC;
+
 public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Replicated, Category = "State")
 	TArray<class AWeapon*> Weapons;
@@ -103,11 +107,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void Pick();
 
+	UFUNCTION(BlueprintCallable, Category = "Character")
+	virtual void ReloadFinish();
+
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* AM_Shooting;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* AM_Aiming;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
+	UAnimMontage* AM_Reloading;
 
 protected: 
 	UFUNCTION()
@@ -122,5 +132,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	void StopAMShooting();
 };
 
