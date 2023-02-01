@@ -29,6 +29,7 @@ void UTargetClass::BeginPlay()
 	CurrentRotation = GetOwner()->GetActorRotation();
 	HitRotation = CurrentRotation + FRotator(0.0f, -40.0f, 0.0f);
 	HitRotationReversed = CurrentRotation + FRotator(0.0f, 40.0f, 0.0f);
+	HitRotationVertical = CurrentRotation + FRotator(0.0f, 0.0f, -50.0f);
 	
 	// ...
 	
@@ -56,17 +57,25 @@ void UTargetClass::Hit()
 
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Overlap Test"));
 
-	if (isReverse)
+	if (!isReverse)
 	{
-		//GetOwner()->SetActorRotation(FRotator(0.0f, 115.0f, 0.0f), ETeleportType::TeleportPhysics);
-		GetOwner()->SetActorRotation(HitRotation, ETeleportType::TeleportPhysics);
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("%lld"), Score));
+		if (isVertical)
+		{
+			//GetOwner()->SetActorRotation(FRotator(0.0f, -98.0f, 0.0f), ETeleportType::TeleportPhysics);
+			GetOwner()->SetActorRotation(HitRotationVertical, ETeleportType::TeleportPhysics);
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("2.2"), Score));
+		}
+		
+		else 
+		{
+			//GetOwner()->SetActorRotation(FRotator(0.0f, 115.0f, 0.0f), ETeleportType::TeleportPhysics);
+			GetOwner()->SetActorRotation(HitRotationReversed, ETeleportType::TeleportPhysics);
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("%lld"), Score));
+		}
 	}
 	else
 	{
-		//GetOwner()->SetActorRotation(FRotator(0.0f, -98.0f, 0.0f), ETeleportType::TeleportPhysics);
-		GetOwner()->SetActorRotation(HitRotationReversed, ETeleportType::TeleportPhysics);
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("2.2"), Score));
+		GetOwner()->SetActorRotation(HitRotation, ETeleportType::TeleportPhysics);
 	}
 
 	Scoring();

@@ -18,9 +18,9 @@ ATPSGameMode::ATPSGameMode()
 
 	Barrier0 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BarrierBlock"));
 	ConstructorHelpers::FClassFinder<UStaticMeshComponent> Barrier(TEXT("Game/SoulCity/Environment/Meshes/NewNavi/Handrails/SM_slum_handrails_handrails_12"));
-	if (Barrier.Succeeded()) {
-		((UStaticMeshComponent*)Barrier0)->SetStaticMesh(Barrier.Class);
-	}
+	//if (Barrier.Succeeded()) {
+	//	((UStaticMeshComponent*)Barrier0)->SetStaticMesh(Barrier.Class);
+	//}
 	Barrier0->SetWorldLocationAndRotation(FVector(100.0f, 0.0f, 0.0f), FQuat(0.0), false, 0, ETeleportType::None);
 }
 
@@ -28,7 +28,7 @@ void ATPSGameMode::AddScore(int Points)
 {
 	Score += Points;
 
-	if (Score <= 8)
+	if (Score >= 8)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("TEST")));
 	}

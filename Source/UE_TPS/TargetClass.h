@@ -34,6 +34,9 @@ public:
 		bool isReverse;
 
 	UPROPERTY(EditAnywhere)
+		bool isVertical;
+
+	UPROPERTY(EditAnywhere)
 		FVector HitBoxLocation;
 
 	UPROPERTY(EditAnywhere)
@@ -44,6 +47,9 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 		FRotator HitRotationReversed;
+
+	UPROPERTY(EditAnywhere)
+		FRotator HitRotationVertical;
 
 	UPROPERTY(EditAnywhere)
 		bool isHit = false;
