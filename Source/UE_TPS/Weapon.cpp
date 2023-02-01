@@ -97,6 +97,39 @@ void AWeapon::Pick()
 	activateRadius->SetSphereRadius(0.0f);
 }
 
+void AWeapon::AddAmmo(int ammo)
+{
+	StockAmmo += ammo;
+	if (StockAmmo > MaxStockAmmo)
+	{
+		StockAmmo = MaxStockAmmo;
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("STOCK AMMO %lld"), StockAmmo));
+}
+
+void AWeapon::Reload()
+{
+	int amooNeed = MaxMagazineAmmo - MagazineAmmo;
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("NEED %lld"), amooNeed));
+	if (StockAmmo >= amooNeed) 
+	{ 
+		MagazineAmmo += amooNeed;
+		StockAmmo -= amooNeed; 
+	}
+	else
+	{ 
+		MagazineAmmo += StockAmmo;
+		StockAmmo = 0;
+	}
+
+	//sound & animation
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("-MAGAZINE AMMO %lld"), MagazineAmmo));
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("STOCK AMMO %lld"), StockAmmo));
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("MAGAZINE AMMO %lld"), MagazineAmmo));
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("STOCK AMMO %lld"), StockAmmo));
+}
+
 void AWeapon::SetShootReady()
 {
 	CanShoot = true;
@@ -137,11 +170,17 @@ void AWeapon::Shoot()
 
 	FString TireurClassName = Acteur->GetClass()->GetName();
 
-	if (TireurClassName == "BP_ThirdPersonCharacter")
+	AUE_TPSCharacter* Player = Cast <AUE_TPSCharacter>(Acteur);
+
+	if (Player->CurrentWeapon->MagazineAmmo <= 0)
 	{
-		AUE_TPSCharacter* Player = Cast <AUE_TPSCharacter>(Acteur);
-		if (ToTarget) return;
+		return;
 	}
+	else {
+		Player->CurrentWeapon->MagazineAmmo--;
+	}
+	
+
 
 	// Acces a la fleche
 

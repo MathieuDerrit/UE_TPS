@@ -38,6 +38,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 		TEnumAsByte<AmmoType> AmmoType = AmmoType::Rifle_Ammo;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
+		int Ammo = 25;
+
 protected:
 	// Called when the game starts or when spawned
 	//virtual void BeginPlay() override;
@@ -48,6 +51,6 @@ protected:
 public:	
 	// Called every frame
 	//virtual void Tick(float DeltaTime) override;
-	bool CollectAmmo(class AUE_TPSCharacter Character);
+	bool CollectAmmo(class AUE_TPSCharacter* Character);
 
 };

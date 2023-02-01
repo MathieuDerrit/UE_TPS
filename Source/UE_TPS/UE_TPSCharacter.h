@@ -67,6 +67,8 @@ protected:
 	virtual void AimToTarget();
 	virtual void StartShoot();
 	virtual void StopShoot();
+	virtual void Reload();
+
 	bool bIsAiming = false;
 			
 
@@ -99,7 +101,7 @@ public:
 	virtual void DropWeapon();
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
-	virtual void PickWeapon();
+	virtual void Pick();
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* AM_Shooting;

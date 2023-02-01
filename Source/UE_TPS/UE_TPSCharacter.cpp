@@ -135,8 +135,11 @@ void AUE_TPSCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	//Drop Weapon
 	PlayerInputComponent->BindAction(FName("DropWeapon"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::DropWeapon);
 
-	//Pick Weapon
-	PlayerInputComponent->BindAction(FName("PickWeapon"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::PickWeapon);
+	//Pick
+	PlayerInputComponent->BindAction(FName("Pick"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::Pick);
+
+	//Reaload
+	PlayerInputComponent->BindAction(FName("Reload"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::Reload);
 
 }
 
@@ -271,7 +274,7 @@ void AUE_TPSCharacter::DropWeapon()
 	}
 }
 
-void AUE_TPSCharacter::PickWeapon()
+void AUE_TPSCharacter::Pick()
 {
 	TArray<AActor*> Result;
 	GetOverlappingActors(Result, AWeapon::StaticClass());
@@ -300,8 +303,13 @@ void AUE_TPSCharacter::PickWeapon()
 	for (AActor* Actor : Result)
 	{
 		AAmmo* Ammo = Cast <AAmmo>(Actor);
-		//Ammo->CollectAmmo(*this);
+		Ammo->CollectAmmo(this);
 	}
+}
+
+void AUE_TPSCharacter::Reload()
+{
+	CurrentWeapon->Reload();
 }
 
 void AUE_TPSCharacter::Server_SetCurrentWeapon_Implementation(AWeapon* NewWeapon)

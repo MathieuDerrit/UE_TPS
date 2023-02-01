@@ -93,10 +93,16 @@ public:
 	TArray<USoundWave*> Audios;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
-	int currentClipAmmo = 0;
+	int MagazineAmmo = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
-	int maxClipAmmo = 25;
+	int StockAmmo = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
+	int MaxMagazineAmmo = 25;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
+	int MaxStockAmmo = 200;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
 	TEnumAsByte<WeaponType> WeaponType = WeaponType::Rifle_Weapon;
@@ -133,6 +139,8 @@ public:
 	void SetShootReady();
 	void Drop();
 	void Pick();
+	void AddAmmo(int ammo);
+	void Reload();
 
 };
 #undef MYPROJECT2_API
