@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "TPSGameMode.h"
 #include "TargetClass.generated.h"
 
 
@@ -32,6 +34,9 @@ public:
 		bool isReverse;
 
 	UPROPERTY(EditAnywhere)
+		bool isVertical;
+
+	UPROPERTY(EditAnywhere)
 		FVector HitBoxLocation;
 
 	UPROPERTY(EditAnywhere)
@@ -44,10 +49,16 @@ public:
 		FRotator HitRotationReversed;
 
 	UPROPERTY(EditAnywhere)
-		int Score;
+		FRotator HitRotationVertical;
+
+	UPROPERTY(EditAnywhere)
+		bool isHit = false;
 
 	UFUNCTION()
 		void Hit();
+	
+	UFUNCTION(BlueprintCallable)
+		void Scoring();
 
 	UFUNCTION()
 		void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

@@ -305,7 +305,7 @@ void AWeapon::Shoot()
 				if (Comp && Comp->IsSimulatingPhysics()) Comp->AddImpulse(HitResult.Location * 100.f);
 			}
 
-			if (S == "Target_C" || S == "TargetReverse_C")
+			if (S == "Target_C" || S == "TargetReverse_C" || S == "TargetVertical_C")
 			{
 				UTargetClass* Target = HitResult.GetActor()->FindComponentByClass<UTargetClass>();
 				if (Target) Target->Hit();
