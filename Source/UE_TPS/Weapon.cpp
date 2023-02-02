@@ -123,11 +123,6 @@ void AWeapon::Reload()
 	}
 
 	//sound & animation
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("-MAGAZINE AMMO %lld"), MagazineAmmo));
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("STOCK AMMO %lld"), StockAmmo));
-
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("MAGAZINE AMMO %lld"), MagazineAmmo));
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("STOCK AMMO %lld"), StockAmmo));
 }
 
 void AWeapon::SetShootReady()

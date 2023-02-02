@@ -52,7 +52,9 @@ bool AAmmo::CollectAmmo(AUE_TPSCharacter* Character)
 			//play sound ?
 
 			Character->Weapons[i]->AddAmmo(Ammo);
-			Character->AmmoNotif();
+			FString txt = FString("+ ") + FString::FromInt(Ammo) + FString(" ") + FString(UEnum::GetValueAsString(Character->Weapons[i]->AmmoType.GetValue())).Replace(*FString("AmmoType::"), *FString(""), ESearchCase::CaseSensitive).Replace(*FString("_Ammo"), *FString(" Ammo"), ESearchCase::CaseSensitive);
+	
+			Character->AmmoNotif(txt);
 			Destroy();
 		}
 	}

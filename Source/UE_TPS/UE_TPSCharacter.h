@@ -98,6 +98,9 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "State")
 	int32 CurrentIndex = 0;
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "State")
+	FString notifTxt = "";
+
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void EquipWeapon(const int32 Index);
 
@@ -119,8 +122,11 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* AM_Reloading;
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void AmmoNotif();
+	UFUNCTION(BlueprintCallable, Category = "Character")
+	void AmmoNotif(FString txt);
+
+	UFUNCTION(BlueprintCallable, Category = "Character")
+	void EndAmmoNotif();
 
 	UFUNCTION()
 		void Countdown();
