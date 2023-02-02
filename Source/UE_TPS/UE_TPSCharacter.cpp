@@ -104,7 +104,7 @@ void AUE_TPSCharacter::BeginPlay()
 	}
 
 	FTimerHandle TimerHandle;
-	//GetWorldTimerManager().SetTimer(TimerHandle, this, &AUE_TPSCharacter::Countdown, 1.f, true, 0.0);
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AUE_TPSCharacter::Countdown, 1.f, true, 0.0);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -418,7 +418,7 @@ void AUE_TPSCharacter::AimToTarget()
 		GetMesh()->GetAnimInstance()->Montage_Stop(0.0f, AM_Aiming);
 	}
 }
-/*
+
 void AUE_TPSCharacter::Countdown()
 {
 	if (Seconds != 0)
@@ -429,8 +429,8 @@ void AUE_TPSCharacter::Countdown()
 	{
 		if (Minutes == 0)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("TIMER END")));
-			UGameplayStatics::OpenLevel(GetWorld(), "Menu");
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("TIMER END")));
+			UGameplayStatics::OpenLevel(GetWorld(), "DefeatMenu");
 		}
 		else
 		{
@@ -438,4 +438,4 @@ void AUE_TPSCharacter::Countdown()
 			Seconds = 59;
 		}
 	}
-}*/
+}
