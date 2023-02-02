@@ -122,6 +122,14 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void AmmoNotif();
 
+	UFUNCTION()
+		void Countdown();
+
+	UPROPERTY(BlueprintReadOnly)
+		int Minutes = 0;
+
+	UPROPERTY(BlueprintReadOnly)
+		int Seconds = 10;
 
 protected: 
 	UFUNCTION()
