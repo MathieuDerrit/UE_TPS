@@ -132,10 +132,10 @@ public:
 		void Countdown();
 
 	UPROPERTY(BlueprintReadOnly)
-		int Minutes = 0;
+		int Minutes = 5;
 
 	UPROPERTY(BlueprintReadOnly)
-		int Seconds = 10;
+		int Seconds = 0;
 
 protected: 
 	UFUNCTION()
