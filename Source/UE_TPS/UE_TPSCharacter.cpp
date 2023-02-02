@@ -104,7 +104,7 @@ void AUE_TPSCharacter::BeginPlay()
 	}
 
 	FTimerHandle TimerHandle;
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AUE_TPSCharacter::Countdown, 1.f, true, 0.0);
+	//GetWorldTimerManager().SetTimer(TimerHandle, this, &AUE_TPSCharacter::Countdown, 1.f, true, 0.0);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -158,6 +158,18 @@ void AUE_TPSCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 	DOREPLIFETIME_CONDITION(AUE_TPSCharacter, Weapons, COND_None);
 	DOREPLIFETIME_CONDITION(AUE_TPSCharacter, CurrentWeapon, COND_None);
+}
+
+void AUE_TPSCharacter::AmmoNotif(FString txt)
+{
+	notifTxt = txt;
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AUE_TPSCharacter::EndAmmoNotif, 1.f, false, 3);
+}
+
+void AUE_TPSCharacter::EndAmmoNotif()
+{
+	notifTxt = "";
 }
 
 void AUE_TPSCharacter::OnRep_CurrentWeapon(const AWeapon* OldWeapon)
@@ -395,7 +407,7 @@ void AUE_TPSCharacter::AimToTarget()
 		GetMesh()->GetAnimInstance()->Montage_Stop(0.0f, AM_Aiming);
 	}
 }
-
+/*
 void AUE_TPSCharacter::Countdown()
 {
 	if (Seconds != 0)
@@ -415,4 +427,4 @@ void AUE_TPSCharacter::Countdown()
 			Seconds = 59;
 		}
 	}
-}
+}*/
