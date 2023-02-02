@@ -128,6 +128,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	void EndAmmoNotif();
 
+	UFUNCTION()
+		void Countdown();
+
+	UPROPERTY(BlueprintReadOnly)
+		int Minutes = 0;
+
+	UPROPERTY(BlueprintReadOnly)
+		int Seconds = 10;
 
 protected: 
 	UFUNCTION()
