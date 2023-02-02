@@ -119,6 +119,10 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* AM_Reloading;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void AmmoNotif();
+
+
 protected: 
 	UFUNCTION()
 	virtual void OnRep_CurrentWeapon(const class AWeapon* OldWeapon);

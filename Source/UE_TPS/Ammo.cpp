@@ -52,6 +52,7 @@ bool AAmmo::CollectAmmo(AUE_TPSCharacter* Character)
 			//play sound ?
 
 			Character->Weapons[i]->AddAmmo(Ammo);
+			Character->AmmoNotif();
 			Destroy();
 		}
 	}
