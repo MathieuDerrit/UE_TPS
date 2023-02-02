@@ -21,8 +21,8 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
-	bUseControllerRotationPitch = true;
-	bUseControllerRotationYaw = true;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
 	// Configure character movement
@@ -71,8 +71,8 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 
 void AUE_TPSCharacter::BeginPlay()
 {
-	bUseControllerRotationPitch = true;
-	bUseControllerRotationYaw = true;
+	//bUseControllerRotationPitch = true;
+	//bUseControllerRotationYaw = true;
 
 	// Call the base class  
 	Super::BeginPlay();
@@ -213,7 +213,6 @@ void AUE_TPSCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
-
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *LookAxisVector.ToString()));
 	}
 }
@@ -230,6 +229,7 @@ void AUE_TPSCharacter::PlayAudio(const UObject* Object, FVector Location, int Re
 //SHOOT
 void AUE_TPSCharacter::StartShoot()
 {
+	bUseControllerRotationYaw = true;
 	GetMesh()->GetAnimInstance()->Montage_Play(AM_Shooting, CurrentWeapon->FireRate);
 	CurrentWeapon->StartShoot(this, true);
 	IsShooting = true;
@@ -237,6 +237,7 @@ void AUE_TPSCharacter::StartShoot()
 
 void AUE_TPSCharacter::StopShoot()
 {
+	bUseControllerRotationYaw = false;
 	StopAMShooting();
 	CurrentWeapon->StopShoot();
 	IsShooting = false;
@@ -369,6 +370,7 @@ void AUE_TPSCharacter::LastWeapon()
 //AIM
 void AUE_TPSCharacter::AimToTarget()
 {	
+	bUseControllerRotationYaw = true;
 	// Switch aiming status
 	bIsAiming = !bIsAiming;
 	// Switch camera
