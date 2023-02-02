@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/Actor.h"
 #include "Math/TransformNonVectorized.h"
+#include "Kismet/GameplayStatics.h"
 #include "TPSGameMode.generated.h"
 
 /**
