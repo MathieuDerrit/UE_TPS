@@ -114,6 +114,15 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
 	UAnimMontage* AM_Aiming;
 
+	UFUNCTION()
+		void Countdown();
+
+	UPROPERTY(BlueprintReadOnly)
+		int Minutes = 0;
+
+	UPROPERTY(BlueprintReadOnly)
+		int Seconds = 10;
+
 
 protected: 
 	UFUNCTION()
