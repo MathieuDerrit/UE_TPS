@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "GameFramework/Actor.h"
+#include "Math/TransformNonVectorized.h"
 #include "TPSGameMode.generated.h"
 
 /**
@@ -32,6 +34,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		int Score;
 
-	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* Barrier0;
+	//UPROPERTY(EditAnywhere)
+	//	UStaticMeshComponent* Barrier0;
+
+	//UPROPERTY(EditAnywhere)
+	//	TSubclassOf<AActor>ActorToSpawn;
 };
