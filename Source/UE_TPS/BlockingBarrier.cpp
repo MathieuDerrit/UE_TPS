@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TPSGameMode.h"
 #include "BlockingBarrier.h"
 
 
@@ -17,6 +16,8 @@ ABlockingBarrier::ABlockingBarrier()
 void ABlockingBarrier::BeginPlay()
 {
 	Super::BeginPlay();
+	ATPSGameMode* gm = Cast<ATPSGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	GameMode = gm;
 	//
 	//GetWorld()->SpawnActor<AActor>(ActorSpawning, GetActorTransform());
 }
@@ -25,6 +26,12 @@ void ABlockingBarrier::BeginPlay()
 void ABlockingBarrier::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (GameMode->Score == 8)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("TEST_DESTROY")));
+		Destroy();
+	}
 
 }
 

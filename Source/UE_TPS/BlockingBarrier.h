@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-//#include "TPSGameMode.h"
-//#include "Kismet/GameplayStatics.h"
+#include "TPSGameMode.h"
+#include "Kismet/GameplayStatics.h"
 #include "BlockingBarrier.generated.h"
 
 UCLASS()
@@ -20,6 +20,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	ATPSGameMode* GameMode;
 
 public:	
 	// Called every frame
