@@ -101,6 +101,12 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "State")
 	FString notifTxt = "";
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "State")
+	bool IsCrounch = false;
+
+	UFUNCTION(BlueprintCallable, Category = "Character")
+	virtual void Crounch();
+
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void EquipWeapon(const int32 Index);
 
@@ -127,10 +133,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	void EndAmmoNotif();
-
+/*
 	UFUNCTION()
 		void Countdown();
-
+*/
 	UPROPERTY(BlueprintReadOnly)
 		int Minutes = 0;
 

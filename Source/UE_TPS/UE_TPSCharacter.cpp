@@ -148,6 +148,9 @@ void AUE_TPSCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	//Reaload
 	PlayerInputComponent->BindAction(FName("Reload"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::Reload);
 
+	//Crounch
+	PlayerInputComponent->BindAction(FName("Crounch"), EInputEvent::IE_Pressed, this, &AUE_TPSCharacter::Crounch);
+
 	PlayerInputC = PlayerInputComponent;
 
 }
@@ -170,6 +173,11 @@ void AUE_TPSCharacter::AmmoNotif(FString txt)
 void AUE_TPSCharacter::EndAmmoNotif()
 {
 	notifTxt = "";
+}
+
+void AUE_TPSCharacter::Crounch()
+{
+	IsCrounch = !IsCrounch;
 }
 
 void AUE_TPSCharacter::OnRep_CurrentWeapon(const AWeapon* OldWeapon)
@@ -355,6 +363,9 @@ void AUE_TPSCharacter::Reload()
 
 	//Pick
 	PlayerInputC->RemoveActionBinding(FName("Pick"), EInputEvent::IE_Pressed);
+
+	//Crounch
+	PlayerInputC->RemoveActionBinding(FName("Crounch"), EInputEvent::IE_Pressed);
 }
 
 void AUE_TPSCharacter::ReloadFinish()
