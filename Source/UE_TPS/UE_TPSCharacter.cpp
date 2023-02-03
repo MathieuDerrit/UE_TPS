@@ -341,29 +341,32 @@ void AUE_TPSCharacter::Pick()
 
 void AUE_TPSCharacter::Reload()
 {
-	GetMesh()->GetAnimInstance()->Montage_Play(AM_Reloading);
-	UGameplayStatics::PlaySoundAtLocation(this, Audios[0], this->GetActorLocation());
-	CurrentWeapon->Reload();
-	
-	//Swap Weapon
-	PlayerInputC->RemoveActionBinding(FName("NextWeapon"), EInputEvent::IE_Pressed);
-	PlayerInputC->RemoveActionBinding(FName("LastWeapon"), EInputEvent::IE_Pressed);
+	if (CurrentWeapon->StockAmmo > 0)
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(AM_Reloading);
+		UGameplayStatics::PlaySoundAtLocation(this, Audios[0], this->GetActorLocation());
+		CurrentWeapon->Reload();
 
-	//Aiming
-	PlayerInputC->RemoveActionBinding(FName("Aim"), EInputEvent::IE_Pressed);
+		//Swap Weapon
+		PlayerInputC->RemoveActionBinding(FName("NextWeapon"), EInputEvent::IE_Pressed);
+		PlayerInputC->RemoveActionBinding(FName("LastWeapon"), EInputEvent::IE_Pressed);
 
-	//Shoot
-	PlayerInputC->RemoveActionBinding(FName("Shoot"), EInputEvent::IE_Pressed);
-	PlayerInputC->RemoveActionBinding(FName("Shoot"), EInputEvent::IE_Released);
+		//Aiming
+		PlayerInputC->RemoveActionBinding(FName("Aim"), EInputEvent::IE_Pressed);
 
-	//Drop Weapon
-	PlayerInputC->RemoveActionBinding(FName("DropWeapon"), EInputEvent::IE_Pressed);
+		//Shoot
+		PlayerInputC->RemoveActionBinding(FName("Shoot"), EInputEvent::IE_Pressed);
+		PlayerInputC->RemoveActionBinding(FName("Shoot"), EInputEvent::IE_Released);
 
-	//Pick
-	PlayerInputC->RemoveActionBinding(FName("Pick"), EInputEvent::IE_Pressed);
+		//Drop Weapon
+		PlayerInputC->RemoveActionBinding(FName("DropWeapon"), EInputEvent::IE_Pressed);
 
-	//Crounch
-	PlayerInputC->RemoveActionBinding(FName("Crounch"), EInputEvent::IE_Pressed);
+		//Pick
+		PlayerInputC->RemoveActionBinding(FName("Pick"), EInputEvent::IE_Pressed);
+
+		//Crounch
+		PlayerInputC->RemoveActionBinding(FName("Crounch"), EInputEvent::IE_Pressed);
+	}
 }
 
 void AUE_TPSCharacter::ReloadFinish()
