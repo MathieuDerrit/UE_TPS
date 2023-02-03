@@ -62,6 +62,15 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 
 	ConstructorHelpers::FObjectFinder<UAnimMontage> MontageReloadingObj(TEXT("AnimMontage'/Game/Characters/Soldier/Animations/AM_Reloading.AM_Reloading'"));
 	if (MontageReloadingObj.Succeeded()) AM_Reloading = MontageReloadingObj.Object;
+
+	// Audios
+	if (Audios.Num() <= 0)
+	{
+		USoundWave* Audio0 = NULL;
+		ConstructorHelpers::FObjectFinder<USoundWave> Audio0Obj(TEXT("SoundWave'/Game/MilitaryWeapSilver/Sound/Rifle/Wavs/Rifle_Reload01.Rifle_Reload01'"));
+		if (Audio0Obj.Succeeded()) Audio0 = Audio0Obj.Object;
+		Audios = { Audio0 };
+	}
 }
 
 void AUE_TPSCharacter::BeginPlay()
@@ -333,6 +342,7 @@ void AUE_TPSCharacter::Pick()
 void AUE_TPSCharacter::Reload()
 {
 	GetMesh()->GetAnimInstance()->Montage_Play(AM_Reloading);
+	UGameplayStatics::PlaySoundAtLocation(this, Audios[0], this->GetActorLocation());
 	CurrentWeapon->Reload();
 	
 	//Swap Weapon

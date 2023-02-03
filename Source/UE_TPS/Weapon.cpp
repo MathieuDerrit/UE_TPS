@@ -22,7 +22,7 @@ AWeapon::AWeapon()
 	activateRadius->SetGenerateOverlapEvents(true);
 	activateRadius->SetupAttachment(Mesh, FName("AmmoEject"));
 	activateRadius->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-=	activateRadius->bHiddenInGame = true;
+	activateRadius->bHiddenInGame = true;
 	activateRadius->SetVisibility(false);
 
 	//Arrow
@@ -93,7 +93,7 @@ void AWeapon::Pick()
 	Mesh->SetSimulatePhysics(false);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Mesh->ResetRelativeTransform();
-=	activateRadius->SetSphereRadius(0.0f);
+	activateRadius->SetSphereRadius(0.0f);
 }
 
 void AWeapon::AddAmmo(int ammo)
