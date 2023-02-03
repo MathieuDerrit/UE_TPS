@@ -29,15 +29,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 		int GetScore();
 
-	//UFUNCTION()
-	//	void DestroyObject();
-
 	UPROPERTY(EditAnywhere)
 		int Score;
-
-	//UPROPERTY(EditAnywhere)
-	//	UStaticMeshComponent* Barrier0;
-
-	//UPROPERTY(EditAnywhere)
-	//	TSubclassOf<AActor>ActorToSpawn;
 };

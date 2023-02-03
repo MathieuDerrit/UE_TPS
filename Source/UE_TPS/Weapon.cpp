@@ -22,8 +22,7 @@ AWeapon::AWeapon()
 	activateRadius->SetGenerateOverlapEvents(true);
 	activateRadius->SetupAttachment(Mesh, FName("AmmoEject"));
 	activateRadius->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-	//activateRadius->OnComponentBeginOverlap.AddDynamic(this, &AScrollsCharacter::OnOverlapActivateSphere);
-	activateRadius->bHiddenInGame = true;
+=	activateRadius->bHiddenInGame = true;
 	activateRadius->SetVisibility(false);
 
 	//Arrow
@@ -94,8 +93,7 @@ void AWeapon::Pick()
 	Mesh->SetSimulatePhysics(false);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Mesh->ResetRelativeTransform();
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%lld"), Mesh->GetRelativeTransform().ToString()));
-	activateRadius->SetSphereRadius(0.0f);
+=	activateRadius->SetSphereRadius(0.0f);
 }
 
 void AWeapon::AddAmmo(int ammo)
@@ -159,8 +157,6 @@ void AWeapon::StopShoot()
 
 void AWeapon::Shoot()
 {
-
-	// UE_LOG(LogTemp, Warning, TEXT("Tirer"));
 
 	FString TireurClassName = Acteur->GetClass()->GetName();
 
@@ -260,9 +256,6 @@ void AWeapon::Shoot()
 	// Tir
 	// Afficher une ligne rouge montrant le parcours du tir effectu�
 	// Diam�tre : 1.0f / Dur�e d'affichage : 5.0f secondes
-	// #include "Engine/Public/DrawDebugHelpers.h"
-
-	// DrawDebugLine (GetWorld (), Depart, Fin, FColor::Red, false, 2.0f, (uint8)0, 1.0f);
 
 	bool CibleAtteinte = GetWorld()->LineTraceSingleByChannel(HitResult, Depart, Fin, ECollisionChannel::ECC_Visibility, InfoProperties);
 
@@ -275,8 +268,6 @@ void AWeapon::Shoot()
 		if (Acteur2)
 		{
 			FString ClassName = Acteur2->GetClass()->GetName();
-			// UE_LOG (LogTemp, Warning, TEXT ("ClassName = %s"), *ClassName);
-			// if (ClassName == "C:\Program Files\Epic Games\UE_5.1\Engine\Source\Runtime\CoreUObject\Public\Templates\Casts.h(298) : error C2976: 'TCastImpl': too few template arguments")
 
 			// Affichage de la particle : ImpactBullet
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactBullet, HitResult.Location, HitResult.ImpactNormal.Rotation(), true);
@@ -310,8 +301,6 @@ void AWeapon::Shoot()
 
 void AWeapon::DrawBulletImpact()
 {
-	// #include "Engine/DecalActor.h"
-	// #include "Components/DecalComponent.h"
 	ADecalActor* Decal = GetWorld()->SpawnActor<ADecalActor>(HitResult.Location, HitResult.ImpactNormal.Rotation());
 
 	if (Decal)
@@ -330,9 +319,7 @@ void AWeapon::DrawBulletImpact()
 		Decal->SetLifeSpan(0.0f);
 
 		FVector Diametre = FVector(5.f);
-		// FVector Diametre = FVector (FMath::RandRange (10.f, 50.f)); // Taille al�atoire entre 10.f et 50.f
 		Decal->GetDecal()->DecalSize = Diametre;
-		// Decal->GetDecal()->DecalSize = FVector(5.f);
 
 		// Faire une rotation apr�s avoir spawn�, pour avoir le dessin correct
 		Decal->SetActorRotation(HitResult.ImpactNormal.Rotation());

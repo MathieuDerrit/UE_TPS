@@ -44,11 +44,6 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
 	// Create a follow camera
-	/*
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-	*/
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->SetRelativeLocation(FVector(0, 50.f, 90.f));
@@ -71,9 +66,6 @@ AUE_TPSCharacter::AUE_TPSCharacter()
 
 void AUE_TPSCharacter::BeginPlay()
 {
-	//bUseControllerRotationPitch = true;
-	//bUseControllerRotationYaw = true;
-
 	// Call the base class  
 	Super::BeginPlay();
 
@@ -236,7 +228,6 @@ void AUE_TPSCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *LookAxisVector.ToString()));
 	}
 }
 
@@ -288,7 +279,6 @@ void AUE_TPSCharacter::EquipWeapon(const int32 Index)
 	{
 		Server_SetCurrentWeapon(Weapons[Index]);
 	}
-	//PlayAudio(this, GetComponentLocation(), 0);
 }
 
 void AUE_TPSCharacter::DropWeapon()
@@ -322,7 +312,6 @@ void AUE_TPSCharacter::Pick()
 			{
 				Weapon->Pick();
 				const FTransform& PlacementTransform = Weapon->PlacementTransform * GetMesh()->GetSocketTransform(FName("weaponsocket_r"));
-				//Weapon->SetActorTransform(GetMesh()->GetSocketTransform(FName("weaponsocket_r")), false, nullptr, ETeleportType::TeleportPhysics);
 				Weapon->SetActorTransform(PlacementTransform);
 				Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform, FName("weaponsocket_r"));
 				Weapon->CurrentOwner = this;
@@ -369,7 +358,6 @@ void AUE_TPSCharacter::Reload()
 
 void AUE_TPSCharacter::ReloadFinish()
 {
-	//GetMesh()->GetAnimInstance()->Montage_Stop(0.0f, AM_Reloading);
 	SetupPlayerInputComponent(PlayerInputC);
 }
 
@@ -407,7 +395,6 @@ void AUE_TPSCharacter::AimToTarget()
 	}
 	
 	// Show crosshair in aiming mode
-	//GetPlayerHUD()->SetCrosshairVisibility(bIsAiming);
 	if (bIsAiming)
 	{
 		GetMesh()->GetAnimInstance()->Montage_Play(AM_Aiming);
@@ -428,7 +415,6 @@ void AUE_TPSCharacter::Countdown()
 	{
 		if (Minutes == 0)
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("TIMER END")));
 			UGameplayStatics::OpenLevel(GetWorld(), "DefeatMenu");
 		}
 		else

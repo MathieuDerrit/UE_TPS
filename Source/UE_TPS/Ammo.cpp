@@ -15,14 +15,10 @@ AAmmo::AAmmo()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
-	/*
-	Mesh->SetSimulatePhysics(true);
-	Mesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-	*/
+
 	//Create activate trigger box
 	activateBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Activate Box"));
 	activateBox->InitBoxExtent(FVector(20, 20, 20));
-	//activateBox->SetBoxExtent(FVector(10,10,10));
 	activateBox->SetGenerateOverlapEvents(true);
 	activateBox->SetupAttachment(Mesh);
 	activateBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
