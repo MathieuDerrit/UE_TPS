@@ -18,8 +18,7 @@ void ABlockingBarrier::BeginPlay()
 	Super::BeginPlay();
 	ATPSGameMode* gm = Cast<ATPSGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	GameMode = gm;
-	//
-	//GetWorld()->SpawnActor<AActor>(ActorSpawning, GetActorTransform());
+
 }
 
 // Called every frame
@@ -34,13 +33,3 @@ void ABlockingBarrier::Tick(float DeltaTime)
 	}
 
 }
-
-//void ABlockingBarrier::Destroying()
-//{
-//	ATPSGameMode* gm = Cast<ATPSGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-//	if ( gm->Score == 8)
-//	{
-//		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("TEST_DESTROY")));
-//		//Destroy();
-//	}
-//}

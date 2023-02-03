@@ -30,22 +30,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<TSubclassOf<AActor>> ActorsToSpawn;
 
-	// Average time between spawns (without random)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float AvgSpawnTime = 5.f;
-	// Random +/- offset of the spawn time
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float RandomSpawnTimeOffset = 1.f;
-
 private:
 	// Box in which we will spawn the actors
 	UPROPERTY(EditDefaultsOnly)
 		UBoxComponent* SpawnBox;
-
-	// Indicates that the actor should spawn actors
-	UPROPERTY(EditAnywhere)
-		bool ShouldSpawn = true;
-
+		
 	// Indicates that the actor should spawn actors
 	UPROPERTY(EditAnywhere)
 		int nbToSpawn = 25;
