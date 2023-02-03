@@ -57,6 +57,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	//Weapon property
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 		class USceneComponent* Root;
 
@@ -65,8 +66,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "State")
 		class AUE_TPSCharacter* CurrentOwner;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "State")
 		class AActor* Acteur;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "State")
 		bool ToTarget;
 
@@ -79,57 +82,63 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Configurations")
 		FTransform PlacementTransform;
 
+	//VFX
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effects")
-	UParticleSystemComponent* SparksComp;
+		UParticleSystemComponent* SparksComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-	UParticleSystem* Sparks;
+		UParticleSystem* Sparks;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
-	UParticleSystem* ImpactBullet;
+		UParticleSystem* ImpactBullet;
 
 	//Audios
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
-	TArray<USoundWave*> Audios;
+		TArray<USoundWave*> Audios;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+		USoundWave* AddAmmoAudio;
+
+	//Ammo
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
+		int MagazineAmmo = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
-	int MagazineAmmo = 0;
+		int StockAmmo = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
-	int StockAmmo = 0;
+		int MaxMagazineAmmo = 25;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
-	int MaxMagazineAmmo = 25;
+		int MaxStockAmmo = 200;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
-	int MaxStockAmmo = 200;
+	//Type
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
+		TEnumAsByte<WeaponType> WeaponType = WeaponType::Rifle_Weapon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
-	TEnumAsByte<WeaponType> WeaponType = WeaponType::Rifle_Weapon;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State")
-	TEnumAsByte<AmmoType> AmmoType = AmmoType::Rifle_Ammo;
+		TEnumAsByte<AmmoType> AmmoType = AmmoType::Rifle_Ammo;
 
 	//Fire
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom")
-	float FireRate = 5.0f;
+		float FireRate = 5.0f;
 
 	FTimerHandle FullyAutomaticTimer;
 	FTimerHandle FullyOneTimer;
 	bool CanShoot = true;
 
 protected:
+	//Direction
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
 		UArrowComponent* Arrow;
+
+	//Sphere pickable
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sphere")
 		USphereComponent* activateRadius;
 
 	UMaterialInterface* BulletDecal;
-
 	void PlayAudio(const UObject* Object, FVector Location, int Ref);
-
 	void DrawBulletImpact();
-
 	FHitResult HitResult;
 
 public:
@@ -141,6 +150,12 @@ public:
 	void Pick();
 	void AddAmmo(int ammo);
 	void Reload();
+
+	UFUNCTION()
+		void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 };
 #undef MYPROJECT2_API

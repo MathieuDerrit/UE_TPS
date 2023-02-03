@@ -16,37 +16,37 @@ class AUE_TPSCharacter : public ACharacter
 
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
+		class USpringArmComponent* CameraBoom;
 
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FollowCamera;
+		class UCameraComponent* FollowCamera;
 
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputMappingContext* DefaultMappingContext;
+		class UInputMappingContext* DefaultMappingContext;
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* JumpAction;
+		class UInputAction* JumpAction;
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* MoveAction;
+		class UInputAction* MoveAction;
 
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* LookAction;
+		class UInputAction* LookAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-	bool IsShooting = false;
+		bool IsShooting = false;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
-	bool IsDrop = false;
+		bool IsDrop = false;
 
 	//Audios
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio", meta = (AllowPrivateAccess = "true"))
-	TArray<USoundWave*> Audios;
+		TArray<USoundWave*> Audios;
 
 public:
 	AUE_TPSCharacter();
@@ -83,56 +83,59 @@ protected:
 protected:
 	// Spawn weapon default
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	TArray<TSubclassOf<class AWeapon>> DefaultWeapons;
+		TArray<TSubclassOf<class AWeapon>> DefaultWeapons;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	UInputComponent* PlayerInputC;
+		UInputComponent* PlayerInputC;
 
 public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Replicated, Category = "State")
-	TArray<class AWeapon*> Weapons;
+		TArray<class AWeapon*> Weapons;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, ReplicatedUsing = OnRep_CurrentWeapon, Category = "State")
-	class AWeapon* CurrentWeapon;
+		class AWeapon* CurrentWeapon;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "State")
-	int32 CurrentIndex = 0;
+		int32 CurrentIndex = 0;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "State")
-	FString notifTxt = "";
+		FString notifTxt = "";
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "State")
-	bool IsCrounch = false;
+		bool IsCrounch = false;
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
-	virtual void Crounch();
+		virtual void Crounch();
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
-	virtual void EquipWeapon(const int32 Index);
+		virtual void EquipWeapon(const int32 Index);
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
-	virtual void DropWeapon();
+		virtual void DropWeapon();
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
-	virtual void Pick();
+		virtual void Pick();
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
-	virtual void ReloadFinish();
+		virtual void ReloadFinish();
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
-	UAnimMontage* AM_Shooting;
+		UAnimMontage* AM_Shooting;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
-	UAnimMontage* AM_Aiming;
+		UAnimMontage* AM_Aiming;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Animation")
-	UAnimMontage* AM_Reloading;
+		UAnimMontage* AM_Reloading;
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
-	void AmmoNotif(FString txt);
+		void AmmoNotif(FString txt);
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
-	void EndAmmoNotif();
+		void EndAmmoNotif();
+
+	UFUNCTION(BlueprintCallable, Category = "Character")
+		void WeaponNotif(bool active, FString txt = "");
 
 	UFUNCTION()
 		void Countdown();
@@ -142,13 +145,14 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 		int Seconds = 0;
-
+	
 protected: 
 	UFUNCTION()
-	virtual void OnRep_CurrentWeapon(const class AWeapon* OldWeapon);
+		virtual void OnRep_CurrentWeapon(const class AWeapon* OldWeapon);
 
 	UFUNCTION(Server, Reliable)
-	void Server_SetCurrentWeapon(class AWeapon* Weapon);
+		void Server_SetCurrentWeapon(class AWeapon* Weapon);
+
 	virtual void Server_SetCurrentWeapon_Implementation(class AWeapon* Weapon);
 
 public:

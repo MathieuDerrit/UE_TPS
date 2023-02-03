@@ -104,6 +104,19 @@ void AUE_TPSCharacter::BeginPlay()
 		}
 	}
 
+	ATPSGameMode* gm = Cast<ATPSGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	FString options = gm->OptionsString;
+
+	if (options.Contains(FString("Easy")))
+	{
+		Minutes = 8;
+	}
+	else if (options.Contains(FString("Hard")))
+	{
+		Minutes = 3;
+	}
+	
+
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AUE_TPSCharacter::Countdown, 1.f, true, 0.0);
 }
@@ -162,6 +175,18 @@ void AUE_TPSCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 	DOREPLIFETIME_CONDITION(AUE_TPSCharacter, Weapons, COND_None);
 	DOREPLIFETIME_CONDITION(AUE_TPSCharacter, CurrentWeapon, COND_None);
+}
+
+void AUE_TPSCharacter::WeaponNotif(bool active, FString txt)
+{
+	if (active)
+	{
+		notifTxt = txt;
+	}
+	else {
+		notifTxt = "";
+	}
+	
 }
 
 void AUE_TPSCharacter::AmmoNotif(FString txt)
@@ -343,7 +368,7 @@ void AUE_TPSCharacter::Reload()
 {
 	if (CurrentWeapon->StockAmmo > 0)
 	{
-		GetMesh()->GetAnimInstance()->Montage_Play(AM_Reloading);
+		GetMesh()->GetAnimInstance()->Montage_Play(AM_Reloading, 2.0f);
 		UGameplayStatics::PlaySoundAtLocation(this, Audios[0], this->GetActorLocation());
 		CurrentWeapon->Reload();
 
