@@ -23,7 +23,8 @@ AWeapon::AWeapon()
 	activateRadius->SetupAttachment(Mesh, FName("AmmoEject"));
 	activateRadius->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	//activateRadius->OnComponentBeginOverlap.AddDynamic(this, &AScrollsCharacter::OnOverlapActivateSphere);
-	activateRadius->bHiddenInGame = false;
+	activateRadius->bHiddenInGame = true;
+	activateRadius->SetVisibility(false);
 
 	//Arrow
 	Arrow = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
@@ -104,13 +105,11 @@ void AWeapon::AddAmmo(int ammo)
 	{
 		StockAmmo = MaxStockAmmo;
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("STOCK AMMO %lld"), StockAmmo));
 }
 
 void AWeapon::Reload()
 {
 	int amooNeed = MaxMagazineAmmo - MagazineAmmo;
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("NEED %lld"), amooNeed));
 	if (StockAmmo >= amooNeed) 
 	{ 
 		MagazineAmmo += amooNeed;
@@ -276,7 +275,6 @@ void AWeapon::Shoot()
 		if (Acteur2)
 		{
 			FString ClassName = Acteur2->GetClass()->GetName();
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%lld"), *ClassName));
 			// UE_LOG (LogTemp, Warning, TEXT ("ClassName = %s"), *ClassName);
 			// if (ClassName == "C:\Program Files\Epic Games\UE_5.1\Engine\Source\Runtime\CoreUObject\Public\Templates\Casts.h(298) : error C2976: 'TCastImpl': too few template arguments")
 

@@ -320,7 +320,6 @@ void AUE_TPSCharacter::Pick()
 			AWeapon* Weapon = Cast <AWeapon>(Actor);
 			if (Weapon && !Weapon->CurrentOwner)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *Actor->GetName()));
 				Weapon->Pick();
 				const FTransform& PlacementTransform = Weapon->PlacementTransform * GetMesh()->GetSocketTransform(FName("weaponsocket_r"));
 				//Weapon->SetActorTransform(GetMesh()->GetSocketTransform(FName("weaponsocket_r")), false, nullptr, ETeleportType::TeleportPhysics);

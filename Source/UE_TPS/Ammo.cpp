@@ -27,7 +27,8 @@ AAmmo::AAmmo()
 	activateBox->SetupAttachment(Mesh);
 	activateBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	activateBox->OnComponentBeginOverlap.AddDynamic(this, &AAmmo::OnOverlapBegin);
-	activateBox->bHiddenInGame = false;
+	activateBox->bHiddenInGame = true;
+	activateBox->SetVisibility(false);
 
 }
 
@@ -58,7 +59,6 @@ bool AAmmo::CollectAmmo(AUE_TPSCharacter* Character)
 			Destroy();
 		}
 	}
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("AMMO %lld"), getAmmo));
 	return getAmmo;
 }
 
