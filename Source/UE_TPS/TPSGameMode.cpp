@@ -39,7 +39,7 @@ void ATPSGameMode::AddScore(int Points)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("TEST")));
 		
 	}
-	else if (Score == 5)
+	else if (Score == 35)
 	{
 		UGameplayStatics::OpenLevel(GetWorld(), "VictoryMenu");
 	}
