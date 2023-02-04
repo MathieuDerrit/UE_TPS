@@ -28,7 +28,6 @@ void ABlockingBarrier::Tick(float DeltaTime)
 
 	if (GameMode->Score == 8)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("TEST_DESTROY")));
 		Destroy();
 	}
 
